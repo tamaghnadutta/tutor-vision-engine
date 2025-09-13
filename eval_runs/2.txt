@@ -1,0 +1,157 @@
+    2025-09-13 15:28:04 - __main__ - INFO - Starting evaluation harness with real data
+    2025-09-13 15:28:04 - src.data.dataset - INFO - Loaded 4 samples from dataset
+    2025-09-13 15:28:04 - __main__ - INFO - Evaluating baseline model (OCR+LLM)
+    2025-09-13 15:28:04 - src.models.error_detector - INFO - Mapping legacy approach
+    'ocr_llm' to 'gemini'
+    2025-09-13 15:28:04 - src.models.robust_model_router - INFO - Initialized
+    RobustMultiModelProcessor with gemini provider
+    2025-09-13 15:28:04 - src.models.gemini_processor - INFO - Initialized Gemini
+    client successfully
+    2025-09-13 15:28:04 - src.models.error_detector - INFO - Initialized ErrorDetector
+    with gemini approach
+    2025-09-13 15:28:04 - src.eval.evaluator - INFO - Starting evaluation of
+    baseline_ocr_llm
+    2025-09-13 15:28:04 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with gemini...
+    2025-09-13 15:28:04 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with gemini...
+    2025-09-13 15:28:04 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:04 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:04 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:04 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:19 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with gemini
+    2025-09-13 15:28:19 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:20 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with gemini
+    2025-09-13 15:28:20 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:30 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 25.73s using gemini
+    2025-09-13 15:28:30 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=True, confidence=0.950, duration=25.76s using gemini
+    2025-09-13 15:28:30 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with gemini...
+    2025-09-13 15:28:30 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:30 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:32 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 27.54s using gemini
+    2025-09-13 15:28:32 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=False, confidence=0.950, duration=27.57s using
+    gemini
+    2025-09-13 15:28:32 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with gemini...
+    2025-09-13 15:28:32 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:32 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:46 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with gemini
+    2025-09-13 15:28:46 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:47 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with gemini
+    2025-09-13 15:28:47 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:28:56 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 23.73s using gemini
+    2025-09-13 15:28:56 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=True, confidence=0.950, duration=23.76s using gemini
+    2025-09-13 15:29:16 - src.models.robust_model_router - WARNING - Retrying <unknown>
+     in 4.0 seconds as it raised TimeoutError: .
+    2025-09-13 15:29:20 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:29:50 - src.models.robust_model_router - WARNING - Retrying <unknown>
+     in 4.0 seconds as it raised TimeoutError: .
+    2025-09-13 15:29:54 - root - INFO - AFC is enabled with max remote calls: 10.
+    2025-09-13 15:30:24 - src.models.robust_model_router - ERROR - All retry attempts
+    failed for math analysis: RetryError[<Future at 0x109aff8b0 state=finished raised
+    TimeoutError>]
+    2025-09-13 15:30:24 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 113.87s using gemini
+    2025-09-13 15:30:24 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=False, confidence=0.000, duration=113.90s using
+    gemini
+    2025-09-13 15:30:24 - src.eval.evaluator - INFO - Evaluation completed for
+    baseline_ocr_llm: accuracy=0.750, latency_p95=113.97s
+    2025-09-13 15:30:24 - __main__ - INFO - Evaluating improved model (Hybrid)
+    2025-09-13 15:30:24 - src.models.error_detector - INFO - Mapping legacy approach
+    'hybrid' to 'auto'
+    2025-09-13 15:30:24 - src.models.robust_model_router - INFO - Initialized
+    RobustMultiModelProcessor with openai provider
+    2025-09-13 15:30:24 - src.models.gemini_processor - INFO - Initialized Gemini
+    client successfully
+    2025-09-13 15:30:24 - src.models.error_detector - INFO - Initialized ErrorDetector
+    with openai approach
+    2025-09-13 15:30:24 - src.eval.evaluator - INFO - Starting evaluation of
+    improved_hybrid
+    2025-09-13 15:30:24 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with openai...
+    2025-09-13 15:30:24 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with openai...
+    2025-09-13 15:30:31 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with openai
+    2025-09-13 15:30:35 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 10.95s using openai
+    2025-09-13 15:30:35 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=True, confidence=0.950, duration=10.96s using openai
+    2025-09-13 15:30:35 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with openai...
+    2025-09-13 15:30:35 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with openai
+    2025-09-13 15:30:40 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 15.75s using openai
+    2025-09-13 15:30:40 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=True, confidence=0.900, duration=15.76s using openai
+    2025-09-13 15:30:40 - src.models.robust_model_router - INFO - Starting robust
+    parallel image processing with openai...
+    2025-09-13 15:30:43 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with openai
+    2025-09-13 15:30:47 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 11.92s using openai
+    2025-09-13 15:30:47 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=True, confidence=0.950, duration=11.94s using openai
+    2025-09-13 15:30:53 - src.models.robust_model_router - INFO - Robust parallel
+    processing completed successfully with openai
+    2025-09-13 15:30:58 - src.models.robust_model_router - INFO - Robust image analysis
+     completed in 18.22s using openai
+    2025-09-13 15:30:58 - src.models.error_detector - INFO - Robust multi-model error
+    detection completed: has_error=True, confidence=0.950, duration=18.25s using openai
+    2025-09-13 15:30:58 - src.eval.evaluator - INFO - Evaluation completed for
+    improved_hybrid: accuracy=0.750, latency_p95=18.25s
+    2025-09-13 15:30:58 - __main__ - INFO - Results saved to
+    ./data/eval_results/evaluation_results.json
+
+    ================================================================================
+    ERROR DETECTION API - EVALUATION RESULTS
+    ================================================================================
+
+    Core Performance Metrics:
+    +----------------------+----------------------+---------------------+---------------+
+    | Metric               |   Baseline (OCR+LLM) |   Improved (Hybrid) | Improvement   |
+    +======================+======================+=====================+===============+
+    | Accuracy             |                0.75  |               0.75  | +0.000        |
+    +----------------------+----------------------+---------------------+---------------+
+    | F1 Score             |                0.8   |               0.857 | +0.057        |
+    +----------------------+----------------------+---------------------+---------------+
+    | Step-Level Accuracy  |                0.704 |               0.704 | +0.000        |
+    +----------------------+----------------------+---------------------+---------------+
+    | Error Detection Rate |                0.667 |               1     | N/A           |
+    +----------------------+----------------------+---------------------+---------------+
+
+    Latency Metrics (seconds):
+    +--------------+------------+------------+---------------+
+    | Percentile   |   Baseline |   Improved |   Improvement |
+    +==============+============+============+===============+
+    | p50          |      27.57 |      15.77 |         11.81 |
+    +--------------+------------+------------+---------------+
+    | p90          |     113.97 |      18.25 |         95.71 |
+    +--------------+------------+------------+---------------+
+    | p95          |     113.97 |      18.25 |         95.71 |
+    +--------------+------------+------------+---------------+
+
+    Cost Estimation (per 100 requests):
+    +--------------------+------------------+---------------------------------------------+
+    | Model              | Estimated Cost   | Notes                                       |
+    +====================+==================+=============================================+
+    | Baseline (OCR+LLM) | $0.60            | Gemini 2.5 Flash (thinking_budget=0)        |
+    +--------------------+------------------+---------------------------------------------+
+    | Improved (Hybrid)  | $0.60            | Gemini 2.5 Flash Vision(thinking_budget=0)  |
+    +--------------------+------------------+---------------------------------------------+
+
+    ================================================================================
+    2025-09-13 15:30:58 - __main__ - INFO - Evaluation completed successfully

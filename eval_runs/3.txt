@@ -1,0 +1,165 @@
+(env) tamaghnadutta@Tamaghnas-MacBook-Air meraki_labs % python test_complete_solution_areas.py
+🚀 TESTING COMPLETE STUDENT SOLUTION AREAS
+================================================================================
+📋 Testing 4 complete solution areas:
+   1. Attempt1 - Complete Solution Area (30.0% coverage)
+   2. Attempt2 - Complete Solution Area (20.0% coverage)
+   3. Attempt3 - Complete Solution Area (20.0% coverage)
+   4. Attempt4 - Complete Solution Area (81.0% coverage)
+
+✅ API Health Check: {'status': 'healthy', 'service': 'error-detection-api'}
+
+
+================================================================================
+TEST 1/4
+================================================================================
+
+🧪 Testing: Attempt1 - Complete Solution Area
+   Description: Complete handwritten solution area for Probability problem involving conditional probabilities and events.
+   Complete Solution Area: (0.050, 0.050) → (0.650, 0.550)
+   Content Type: Probability problem involving conditional probabilities and events.
+   Coverage: The handwritten work is concentrated in the upper left portion of the image, wit...
+   Confidence: high
+   Area Coverage: 30.0% of image
+   ✅ Success: 17.62s
+   Has error: True
+   Confidence: 0.900
+   Processing approach: robust_model_openai
+   Solution complete: False
+   🚨 Error found: The student incorrectly calculates P(C ∩ G) using P(C | G) instead of using the correct relationship for P(G | C).
+   📍 Error Y position: 5.0
+   🔧 Correction: The correct approach is to use Bayes' theorem: P(k | C) = P(C | k) * P(k) / P(C). First, find P(C) using the law of tota...
+
+   💤 Waiting 3s before next test...
+
+================================================================================
+TEST 2/4
+================================================================================
+
+🧪 Testing: Attempt2 - Complete Solution Area
+   Description: Complete handwritten solution area for Trigonometry problem involving tangent function and solving for height.
+   Complete Solution Area: (0.150, 0.050) → (0.650, 0.450)
+   Content Type: Trigonometry problem involving tangent function and solving for height.
+   Coverage: The handwritten content is centered in the image, starting near the top and exte...
+   Confidence: high
+   Area Coverage: 20.0% of image
+   ✅ Success: 13.57s
+   Has error: True
+   Confidence: 0.950
+   Processing approach: robust_model_openai
+   Solution complete: True
+   🚨 Error found: The student incorrectly calculated tan(35°) as 0.5. The actual value of tan(35°) is approximately 0.7002.
+   🔧 Correction: Recalculate h using the correct value of tan(35°):
+
+h = 47 x tan(35°)
+
+Using a calculator, tan(35°) ≈ 0.7002.
+
+h = 47 x ...
+
+   💤 Waiting 3s before next test...
+
+================================================================================
+TEST 3/4
+================================================================================
+
+🧪 Testing: Attempt3 - Complete Solution Area
+   Description: Complete handwritten solution area for Algebraic equation solving
+   Complete Solution Area: (0.100, 0.100) → (0.600, 0.500)
+   Content Type: Algebraic equation solving
+   Coverage: The handwritten work is centered in the upper part of the image, with equations ...
+   Confidence: high
+   Area Coverage: 20.0% of image
+   ✅ Success: 13.07s
+   Has error: True
+   Confidence: 0.950
+   Processing approach: robust_model_openai
+   Solution complete: False
+   🚨 Error found: The student incorrectly simplified the equation after taking the square root, leading to an incorrect solution.
+   📍 Error Y position: 4.0
+   🔧 Correction: After taking the square root of both sides, the student should consider both the positive and negative roots: x - 2 = ±6...
+
+   💤 Waiting 3s before next test...
+
+================================================================================
+TEST 4/4
+================================================================================
+
+🧪 Testing: Attempt4 - Complete Solution Area
+   Description: Complete handwritten solution area for Complex number algebra problem involving expansion and substitution.
+   Complete Solution Area: (0.050, 0.050) → (0.950, 0.950)
+   Content Type: Complex number algebra problem involving expansion and substitution.
+   Coverage: The handwritten work spans from the top left to the bottom right of the image, c...
+   Confidence: high
+   Area Coverage: 81.0% of image
+   ✅ Success: 17.07s
+   Has error: True
+   Confidence: 0.950
+   Processing approach: robust_model_openai
+   Solution complete: False
+   🚨 Error found: The student incorrectly calculated |z|² as 1² - 2² = 1 + 4 = -3. The correct calculation should be |z|² = (1)² + (2)² = ...
+   🔧 Correction: The correct calculation for |z|² is 5, not -3. The correct substitution should be 5 + 3(2) + 9 = 20.
+
+================================================================================
+📊 COMPLETE SOLUTION AREA RESULTS ANALYSIS
+================================================================================
+✅ Successful tests: 4/4
+❌ Failed tests: 0
+⏱️ Latency Stats: avg=15.33s, min=13.07s, max=17.62s
+
+📈 Results by Content Type:
+   📚 Probability problem involving conditional probabilities and events.:
+      • Tests: 1
+      • Avg confidence: 0.900
+      • Errors detected: 1/1
+      • Avg time: 17.62s
+      • Avg area coverage: 30.0%
+   📚 Trigonometry problem involving tangent function and solving for height.:
+      • Tests: 1
+      • Avg confidence: 0.950
+      • Errors detected: 1/1
+      • Avg time: 13.57s
+      • Avg area coverage: 20.0%
+   📚 Algebraic equation solving:
+      • Tests: 1
+      • Avg confidence: 0.950
+      • Errors detected: 1/1
+      • Avg time: 13.07s
+      • Avg area coverage: 20.0%
+   📚 Complex number algebra problem involving expansion and substitution.:
+      • Tests: 1
+      • Avg confidence: 0.950
+      • Errors detected: 1/1
+      • Avg time: 17.07s
+      • Avg area coverage: 81.0%
+
+📐 Coverage Efficiency Analysis:
+   📊 Attempt3 - Complete Solution Area:
+      • Coverage: 20.0%, Duration: 13.07s, Confidence: 0.950
+      • Efficiency score: 0.3633
+   📊 Attempt2 - Complete Solution Area:
+      • Coverage: 20.0%, Duration: 13.57s, Confidence: 0.950
+      • Efficiency score: 0.3501
+   📊 Attempt1 - Complete Solution Area:
+      • Coverage: 30.0%, Duration: 17.62s, Confidence: 0.900
+      • Efficiency score: 0.1703
+   📊 Attempt4 - Complete Solution Area:
+      • Coverage: 81.0%, Duration: 17.07s, Confidence: 0.950
+      • Efficiency score: 0.0687
+
+🎯 Individual Test Details:
+   🚨 Attempt1 - Complete Solution Area: 17.62s, conf=0.900, coverage=30.0%
+   🚨 Attempt2 - Complete Solution Area: 13.57s, conf=0.950, coverage=20.0%
+   🚨 Attempt3 - Complete Solution Area: 13.07s, conf=0.950, coverage=20.0%
+   🚨 Attempt4 - Complete Solution Area: 17.07s, conf=0.950, coverage=81.0%
+
+💾 Detailed results saved to complete_solution_test_results_1757766044.json
+
+🎉 Complete solution area testing completed!
+   Success rate: 4/4 (100.0%)
+   Average latency: 15.33s
+
+📐 Key Insights:
+   • Average area coverage: 37.8% of image
+   • These bounding boxes represent COMPLETE student work areas
+   • Perfect for analyzing entire solution approaches

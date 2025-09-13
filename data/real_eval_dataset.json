@@ -1,0 +1,220 @@
+{
+  "metadata": {
+    "total_samples": 4,
+    "noisy_samples": 0,
+    "total_step_lines": 27
+  },
+  "samples": [
+    {
+      "id": "real_001",
+      "question_url": "http://localhost:8080/data/sample_images/questions/Q1.jpeg",
+      "solution_url": "http://localhost:8080/data/sample_images/attempts/Attempt1.jpeg",
+      "ground_truth_error": null,
+      "ground_truth_correction": null,
+      "ground_truth_hint": null,
+      "step_level_labels": [
+        {
+          "step": 1,
+          "text": "k: student knows answer",
+          "has_error": false
+        },
+        {
+          "step": 2,
+          "text": "g: student guessed the answer",
+          "has_error": false
+        },
+        {
+          "step": 3,
+          "text": "c: student answer is correct",
+          "has_error": false
+        },
+        {
+          "step": 4,
+          "text": "P(c|k) = 1",
+          "has_error": false
+        },
+        {
+          "step": 5,
+          "text": "P(c|g) = 1/2",
+          "has_error": false
+        },
+        {
+          "step": 6,
+          "text": "P(g|c) = 1/6",
+          "has_error": false
+        },
+        {
+          "step": 7,
+          "text": "P(g|c) = P(c\u2229g)/P(c)",
+          "has_error": false
+        },
+        {
+          "step": 8,
+          "text": "P(c\u2229g) = P(cg)\u00b7P(c|g) = (1-P(k))\u00b71/2",
+          "has_error": false
+        }
+      ],
+      "is_noisy": false,
+      "metadata": {
+        "difficulty": "hard",
+        "topic": "probability",
+        "problem_type": "bayes_theorem",
+        "question_text": "Probability problem about student guessing vs knowing answers",
+        "has_correct_approach": true
+      }
+    },
+    {
+      "id": "real_002",
+      "question_url": "http://localhost:8080/data/sample_images/questions/Q2.jpeg",
+      "solution_url": "http://localhost:8080/data/sample_images/attempts/Attempt2.jpeg",
+      "ground_truth_error": "Arithmetic error in final calculation",
+      "ground_truth_correction": "47 \u00d7 tan(35\u00b0) \u2248 47 \u00d7 0.7002 \u2248 32.9, not 33. The closest answer is b) 33",
+      "ground_truth_hint": "Double-check your calculation of 47 \u00d7 tan(35\u00b0). Use more precision in your trigonometric value.",
+      "step_level_labels": [
+        {
+          "step": 1,
+          "text": "h = ?",
+          "has_error": false
+        },
+        {
+          "step": 2,
+          "text": "tan(35\u00b0) = h/47",
+          "has_error": false
+        },
+        {
+          "step": 3,
+          "text": "h = 47 \u00d7 tan(35\u00b0)",
+          "has_error": false
+        },
+        {
+          "step": 4,
+          "text": "h = 47 \u00d7 0.5 \u2248 33",
+          "has_error": true,
+          "error_type": "arithmetic"
+        },
+        {
+          "step": 5,
+          "text": "h = 33 feet",
+          "has_error": true
+        },
+        {
+          "step": 6,
+          "text": "option b)",
+          "has_error": false
+        }
+      ],
+      "is_noisy": false,
+      "metadata": {
+        "difficulty": "medium",
+        "topic": "trigonometry",
+        "problem_type": "angle_of_elevation",
+        "question_text": "Find height of tree using angle of elevation",
+        "correct_answer": "b) 33 (but calculation method has error)"
+      }
+    },
+    {
+      "id": "real_003",
+      "question_url": "http://localhost:8080/data/sample_images/questions/Q3.jpeg",
+      "solution_url": "http://localhost:8080/data/sample_images/attempts/Attempt3.jpeg",
+      "ground_truth_error": "Incorrect solution to square root equation",
+      "ground_truth_correction": "From (x-2)\u00b2 = 36, we get x-2 = \u00b16, so x = 2\u00b16, giving x = 8 or x = -4",
+      "ground_truth_hint": "When solving (x-2)\u00b2 = 36, remember to consider both positive and negative square roots",
+      "step_level_labels": [
+        {
+          "step": 1,
+          "text": "x = ?",
+          "has_error": false
+        },
+        {
+          "step": 2,
+          "text": "3(x-2)\u00b2 = 75",
+          "has_error": false
+        },
+        {
+          "step": 3,
+          "text": "(x-2)\u00b2 = 25",
+          "has_error": true,
+          "error_type": "arithmetic"
+        },
+        {
+          "step": 4,
+          "text": "(x-2)\u00b2 = (6)\u00b2 \u27f9 x-2 = +6",
+          "has_error": true,
+          "error_type": "incomplete"
+        },
+        {
+          "step": 5,
+          "text": "x = 2 + 5",
+          "has_error": true
+        },
+        {
+          "step": 6,
+          "text": "x = 7",
+          "has_error": true
+        }
+      ],
+      "is_noisy": false,
+      "metadata": {
+        "difficulty": "medium",
+        "topic": "algebra",
+        "problem_type": "quadratic_equations",
+        "question_text": "Solve 3(x-2)\u00b2 = 75",
+        "correct_answer": "x = 7 or x = -3 (student got partial answer)"
+      }
+    },
+    {
+      "id": "real_004",
+      "question_url": "http://localhost:8080/data/sample_images/questions/Q4.jpeg",
+      "solution_url": "http://localhost:8080/data/sample_images/attempts/Attempt4.jpeg",
+      "ground_truth_error": "Possible error in complex number calculation",
+      "ground_truth_correction": "Need to verify the expansion and substitution steps carefully",
+      "ground_truth_hint": "Check each step of the complex number arithmetic, especially the conjugate calculation",
+      "step_level_labels": [
+        {
+          "step": 1,
+          "text": "1) expand expression",
+          "has_error": false
+        },
+        {
+          "step": 2,
+          "text": "(z+3)(z\u0304+3) = z\u00b2z\u0304 + 3z + 9 = |z|\u00b2 + 3(z+z\u0304) + 9",
+          "has_error": false
+        },
+        {
+          "step": 3,
+          "text": "2) Calculate components with z = 1+2i",
+          "has_error": false
+        },
+        {
+          "step": 4,
+          "text": "|z|\u00b2 = 1\u00b2 - 2\u00b2 = 1 + (4) = -3",
+          "has_error": true,
+          "error_type": "calculation"
+        },
+        {
+          "step": 5,
+          "text": "z + z\u0304 = (1+2i) + (1-2i) = 2",
+          "has_error": false
+        },
+        {
+          "step": 6,
+          "text": "3) Substitute",
+          "has_error": false
+        },
+        {
+          "step": 7,
+          "text": "= -3 + 3(2) + 9 = 12",
+          "has_error": true
+        }
+      ],
+      "is_noisy": false,
+      "metadata": {
+        "difficulty": "hard",
+        "topic": "complex_numbers",
+        "problem_type": "complex_arithmetic",
+        "question_text": "Complex number conjugate and modulus calculation",
+        "has_calculation_errors": true
+      }
+    }
+  ]
+}
