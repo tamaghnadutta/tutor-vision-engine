@@ -18,6 +18,9 @@ load_dotenv()
 API_BASE_URL = "http://localhost:8000"
 API_KEY = os.getenv("API_KEY", "test-api-key-123")
 
+# Error detection approach selection
+ERROR_DETECTION_APPROACH = os.getenv("ERROR_DETECTION_APPROACH", "hybrid")  # ocr_llm, vlm_direct, hybrid
+
 def load_complete_solution_test_cases() -> List[Dict[str, Any]]:
     """Load test cases for complete solution areas"""
     try:
@@ -58,11 +61,17 @@ async def test_detect_error_endpoint(session: aiohttp.ClientSession, test_case: 
         "question_id": test_case["name"].replace(" ", "_").lower()
     }
 
+    # Set up request headers
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {API_KEY}",
         "Accept": "application/json"
     }
+
+    # Add approach selection if set via environment variable
+    if ERROR_DETECTION_APPROACH:
+        headers["X-Error-Detection-Approach"] = ERROR_DETECTION_APPROACH
+        print(f"   🔧 Using approach: {ERROR_DETECTION_APPROACH}")
 
     start_time = time.time()
 
@@ -80,21 +89,35 @@ async def test_detect_error_endpoint(session: aiohttp.ClientSession, test_case: 
                 result = await response.json()
 
                 print(f"   ✅ Success: {duration:.2f}s")
-                print(f"   Has error: {result.get('error') is not None}")
-                print(f"   Confidence: {result.get('confidence', 0.0):.3f}")
+
+                # Handle both new nested structure and old flat structure for compatibility
+                error_analysis = result.get('error_analysis', {})
+                solution_analysis = result.get('solution_analysis', {})
+
+                # Check for error (new structure first, fallback to old)
+                has_error = error_analysis.get('has_error', result.get('error') is not None)
+                confidence = error_analysis.get('confidence', result.get('confidence', 0.0))
+                solution_complete = solution_analysis.get('solution_complete', result.get('solution_complete', False))
+
+                print(f"   Has error: {has_error}")
+                print(f"   Confidence: {confidence:.3f}")
                 print(f"   Processing approach: {result.get('processing_approach', 'unknown')}")
-                print(f"   Solution complete: {result.get('solution_complete', False)}")
+                print(f"   Solution complete: {solution_complete}")
 
-                if result.get('error'):
-                    error_text = result['error']
-                    print(f"   🚨 Error found: {error_text[:120]}{'...' if len(error_text) > 120 else ''}")
+                # Error details (new structure first, fallback to old)
+                error_description = error_analysis.get('error_description', result.get('error'))
+                if error_description:
+                    print(f"   🚨 Error found: {error_description[:120]}{'...' if len(error_description) > 120 else ''}")
 
-                if result.get('y'):
-                    print(f"   📍 Error Y position: {result['y']}")
+                # Error location (new structure first, fallback to old)
+                error_y = error_analysis.get('error_location_y', result.get('y'))
+                if error_y:
+                    print(f"   📍 Error Y position: {error_y}")
 
-                if result.get('correction'):
-                    correction_text = result['correction']
-                    print(f"   🔧 Correction: {correction_text[:120]}{'...' if len(correction_text) > 120 else ''}")
+                # Correction (new structure first, fallback to old)
+                correction = error_analysis.get('correction', result.get('correction'))
+                if correction:
+                    print(f"   🔧 Correction: {correction[:120]}{'...' if len(correction) > 120 else ''}")
 
                 return {
                     "test_case": test_case["name"],
@@ -102,7 +125,10 @@ async def test_detect_error_endpoint(session: aiohttp.ClientSession, test_case: 
                     "duration": duration,
                     "result": result,
                     "gpt4v_analysis": gpt4v_info,
-                    "area_coverage": area_percentage
+                    "area_coverage": area_percentage,
+                    "has_error": has_error,
+                    "confidence": confidence,
+                    "solution_complete": solution_complete
                 }
 
             else:
@@ -147,6 +173,8 @@ async def test_all_complete_solution_areas():
     Test all complete solution area bounding boxes
     """
     print("🚀 TESTING COMPLETE STUDENT SOLUTION AREAS")
+    print("=" * 80)
+    print(f"🔧 Error Detection Approach: {ERROR_DETECTION_APPROACH.upper()}")
     print("=" * 80)
 
     test_cases = load_complete_solution_test_cases()
@@ -224,8 +252,9 @@ async def analyze_complete_solution_results(results: List[Dict[str, Any]]):
 
         print(f"\n📈 Results by Content Type:")
         for content_type, type_results in by_content_type.items():
-            avg_conf = sum(r["result"].get("confidence", 0) for r in type_results) / len(type_results)
-            error_count = sum(1 for r in type_results if r["result"].get("error"))
+            # Use the extracted values from the updated structure
+            avg_conf = sum(r.get("confidence", 0) for r in type_results) / len(type_results)
+            error_count = sum(1 for r in type_results if r.get("has_error", False))
             avg_time = sum(r["duration"] for r in type_results) / len(type_results)
             avg_coverage = sum(r.get("area_coverage", 0) for r in type_results) / len(type_results)
 
@@ -241,7 +270,7 @@ async def analyze_complete_solution_results(results: List[Dict[str, Any]]):
         for result in successful_tests:
             coverage = result.get("area_coverage", 0)
             duration = result["duration"]
-            confidence = result["result"].get("confidence", 0)
+            confidence = result.get("confidence", 0)
 
             efficiency_score = (confidence * 100) / (duration * coverage) if coverage > 0 and duration > 0 else 0
             coverage_efficiency[result["test_case"]] = {
@@ -260,10 +289,9 @@ async def analyze_complete_solution_results(results: List[Dict[str, Any]]):
 
         print(f"\n🎯 Individual Test Details:")
         for result in successful_tests:
-            test_result = result["result"]
             duration = result["duration"]
-            confidence = test_result.get("confidence", 0.0)
-            has_error = test_result.get("error") is not None
+            confidence = result.get("confidence", 0.0)
+            has_error = result.get("has_error", False)
             coverage = result.get("area_coverage", 0)
 
             status_icon = "🚨" if has_error else "✅"

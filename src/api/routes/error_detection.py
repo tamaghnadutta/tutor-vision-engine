@@ -15,7 +15,7 @@ from src.config.settings import get_settings
 from src.models.error_detector import ErrorDetector
 from src.utils.auth import verify_api_key
 from src.utils.persistence import save_request_response
-from src.utils.metrics import REQUEST_COUNT, REQUEST_DURATION
+from src.utils.metrics import REQUEST_COUNT, REQUEST_DURATION, ErrorDetectionMetrics
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -54,17 +54,26 @@ async def detect_error(
         # Initialize error detector
         detector = ErrorDetector()
 
-        # Process the request
-        result = await detector.detect_errors(
-            question_url=str(request.question_url),
-            solution_url=str(request.solution_url),
-            bounding_box=request.bounding_box.model_dump() if request.bounding_box else None,
-            context={
-                "user_id": request.user_id,
-                "session_id": request.session_id,
-                "question_id": request.question_id,
-            }
-        )
+        # Get the approach from detector
+        approach = getattr(detector, 'current_approach', 'unknown')
+
+        # Use error detection metrics
+        with ErrorDetectionMetrics(approach) as metrics:
+            # Process the request
+            result = await detector.detect_errors(
+                question_url=str(request.question_url),
+                solution_url=str(request.solution_url),
+                bounding_box=request.bounding_box.model_dump() if request.bounding_box else None,
+                context={
+                    "user_id": request.user_id,
+                    "session_id": request.session_id,
+                    "question_id": request.question_id,
+                }
+            )
+
+            # Record the result
+            has_error = bool(result.get('error_analysis', {}).get('has_error', False))
+            metrics.record_result(has_error)
 
         # Create response
         response = ErrorDetectionResponse(

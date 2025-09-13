@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     # OpenAI Configuration
     openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-2024-08-06", env="OPENAI_MODEL")
+    openai_vision_model: str = Field(default="gpt-4o", env="OPENAI_VISION_MODEL")  # For OCR tasks
 
     # Model Provider Selection
     model_provider: str = Field(default="auto", env="MODEL_PROVIDER")  # "gemini", "openai", or "auto"
@@ -48,8 +49,12 @@ class Settings(BaseSettings):
     eval_dataset_path: str = Field(default="./data/eval_dataset.json", env="EVAL_DATASET_PATH")
     eval_results_path: str = Field(default="./data/eval_results/", env="EVAL_RESULTS_PATH")
 
-    # Model Selection
+    # Approach Selection (as per assignment requirements)
     error_detection_approach: str = Field(default="hybrid", env="ERROR_DETECTION_APPROACH")  # ocr_llm, vlm_direct, hybrid
+
+    # OCR→LLM Configuration
+    ocr_provider: str = Field(default="gpt4v", env="OCR_PROVIDER")  # Which model to use for OCR
+    reasoning_provider: str = Field(default="auto", env="REASONING_PROVIDER")  # Which model to use for reasoning from OCR text
 
     model_config = {
         'protected_namespaces': ('settings_',),

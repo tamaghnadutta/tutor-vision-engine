@@ -17,10 +17,16 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import structlog
-from src.utils.logging import setup_logging
+import logging
+import os
+from dotenv import load_dotenv
 
-logger = structlog.get_logger()
+# Load environment variables
+load_dotenv()
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -41,9 +47,10 @@ class LoadTestResult:
 class LoadTester:
     """Load tester for the API"""
 
-    def __init__(self, base_url: str, api_key: str):
+    def __init__(self, base_url: str, api_key: str, approach: str = None):
         self.base_url = base_url
         self.api_key = api_key
+        self.approach = approach or os.getenv("ERROR_DETECTION_APPROACH", "hybrid")
         self.results: List[Dict[str, Any]] = []
 
     async def run_load_test(self,
@@ -52,20 +59,25 @@ class LoadTester:
                           duration_seconds: int = 60) -> LoadTestResult:
         """Run load test with specified parameters"""
 
-        logger.info(f"Starting load test: {total_requests} requests, {concurrent_requests} concurrent")
+        # Health check first
+        if not await self._health_check():
+            logger.error("Health check failed, aborting load test")
+            return LoadTestResult(0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {"Health check failed": 1})
+
+        logger.info(f"Starting load test: {total_requests} requests, {concurrent_requests} concurrent, approach: {self.approach}")
 
         start_time = time.time()
         semaphore = asyncio.Semaphore(concurrent_requests)
 
-        # Create sample request
+        # Create sample request using actual test images
         sample_request = {
-            "question_url": "https://example.com/question_image.png",
-            "solution_url": "https://example.com/solution_image.png",
+            "question_url": "http://localhost:8080/data/sample_images/questions/Q1.jpeg",
+            "solution_url": "http://localhost:8080/data/sample_images/attempts/Attempt1.jpeg",
             "bounding_box": {
-                "minX": 316,
-                "maxX": 635,
-                "minY": 48.140625,
-                "maxY": 79.140625
+                "minX": 0.1,
+                "maxX": 0.9,
+                "minY": 0.1,
+                "maxY": 0.9
             },
             "user_id": "load_test_user",
             "session_id": f"load_test_session_{int(time.time())}",
@@ -99,6 +111,22 @@ class LoadTester:
         # Analyze results
         return self._analyze_results(duration)
 
+    async def _health_check(self) -> bool:
+        """Check if the API is healthy before starting load test"""
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{self.base_url}/health", timeout=aiohttp.ClientTimeout(total=10)) as response:
+                    if response.status == 200:
+                        health_data = await response.json()
+                        logger.info(f"API health check passed: {health_data}")
+                        return True
+                    else:
+                        logger.error(f"API health check failed with status {response.status}")
+                        return False
+        except Exception as e:
+            logger.error(f"API health check failed: {e}")
+            return False
+
     async def _make_request(self, semaphore: asyncio.Semaphore,
                           request_data: Dict[str, Any], request_id: int) -> Dict[str, Any]:
         """Make a single API request"""
@@ -109,7 +137,8 @@ class LoadTester:
                 async with aiohttp.ClientSession() as session:
                     headers = {
                         "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-Error-Detection-Approach": self.approach
                     }
 
                     async with session.post(
@@ -134,8 +163,22 @@ class LoadTester:
                             try:
                                 response_data = await response.json()
                                 result['job_id'] = response_data.get('job_id')
-                                result['has_error'] = bool(response_data.get('error'))
-                            except:
+
+                                # Handle new nested structure
+                                error_analysis = response_data.get('error_analysis', {})
+                                solution_analysis = response_data.get('solution_analysis', {})
+
+                                # Extract error information (new structure first, fallback to old)
+                                has_error = error_analysis.get('has_error', bool(response_data.get('error')))
+                                confidence = error_analysis.get('confidence', response_data.get('confidence', 0.0))
+                                solution_complete = solution_analysis.get('solution_complete', response_data.get('solution_complete', False))
+
+                                result['has_error'] = has_error
+                                result['confidence'] = confidence
+                                result['solution_complete'] = solution_complete
+                                result['approach'] = self.approach
+                            except Exception as e:
+                                logger.warning(f"Failed to parse response data: {e}")
                                 pass
                         else:
                             result['error'] = f"HTTP {response.status}"
@@ -229,11 +272,13 @@ class LoadTester:
         logger.info(f"Detailed results saved to {output_path}")
 
 
-def print_results(result: LoadTestResult):
+def print_results(result: LoadTestResult, approach: str = None):
     """Print formatted load test results"""
-    print("\n" + "="*50)
+    print("\n" + "="*60)
     print("LOAD TEST RESULTS")
-    print("="*50)
+    if approach:
+        print(f"Approach: {approach.upper().replace('_', '→')}")
+    print("="*60)
     print(f"Total Requests:       {result.total_requests}")
     print(f"Successful:           {result.successful_requests}")
     print(f"Failed:               {result.failed_requests}")
@@ -251,7 +296,7 @@ def print_results(result: LoadTestResult):
         for error, count in result.error_breakdown.items():
             print(f"  {error}: {count}")
 
-    print("="*50)
+    print("="*60)
 
 
 async def main():
@@ -259,7 +304,7 @@ async def main():
     parser = argparse.ArgumentParser(description="Run load test on error detection API")
     parser.add_argument("--url", default="http://localhost:8000",
                        help="Base URL of the API")
-    parser.add_argument("--api-key", default="test_api_key",
+    parser.add_argument("--api-key", default=os.getenv("API_KEY", "test-api-key-123"),
                        help="API key for authentication")
     parser.add_argument("--requests", type=int, default=25,
                        help="Total number of requests")
@@ -267,15 +312,16 @@ async def main():
                        help="Number of concurrent requests")
     parser.add_argument("--duration", type=int, default=60,
                        help="Maximum duration in seconds")
+    parser.add_argument("--approach",
+                       choices=["ocr_llm", "vlm_direct", "hybrid"],
+                       default=os.getenv("ERROR_DETECTION_APPROACH", "hybrid"),
+                       help="Error detection approach to test")
     parser.add_argument("--output", help="Output file for detailed results")
 
     args = parser.parse_args()
 
-    # Setup
-    setup_logging()
-
     # Run load test
-    tester = LoadTester(args.url, args.api_key)
+    tester = LoadTester(args.url, args.api_key, args.approach)
     result = await tester.run_load_test(
         total_requests=args.requests,
         concurrent_requests=args.concurrent,
@@ -283,7 +329,7 @@ async def main():
     )
 
     # Display results
-    print_results(result)
+    print_results(result, args.approach)
 
     # Save detailed results
     if args.output:

@@ -10,19 +10,14 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from prometheus_client import Counter, Histogram, generate_latest
+from prometheus_client import generate_latest
 from starlette.responses import Response
 
 from src.api.routes import error_detection
 from src.api.middleware import LoggingMiddleware, SecurityMiddleware
 from src.config.settings import get_settings
 from src.utils.logging import setup_logging
-from src.utils.metrics import setup_metrics
-
-
-# Metrics
-REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint', 'status'])
-REQUEST_DURATION = Histogram('http_request_duration_seconds', 'HTTP request duration')
+from src.utils.metrics import setup_metrics, registry
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +71,7 @@ def create_app() -> FastAPI:
     # Metrics endpoint
     @app.get("/metrics")
     async def metrics():
-        return Response(generate_latest(), media_type="text/plain")
+        return Response(generate_latest(registry), media_type="text/plain")
 
     # Global exception handler
     @app.exception_handler(Exception)

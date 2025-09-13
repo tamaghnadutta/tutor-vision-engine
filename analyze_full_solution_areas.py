@@ -70,7 +70,7 @@ async def analyze_full_solution_area(session: aiohttp.ClientSession, image_path:
     """
 
     payload = {
-        "model": "gpt-4o",
+        "model": "gpt-4o",  # Using latest GPT-4o for vision analysis
         "messages": [
             {
                 "role": "user",

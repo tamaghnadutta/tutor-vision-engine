@@ -1,0 +1,50 @@
+================================================================================
+ERROR DETECTION API - DETAILED ANALYTICS REPORT
+================================================================================
+Generated: 2025-09-13 23:08:32
+Period: Last 7 days
+
+📊 OVERVIEW
+----------------------------------------
+Total evaluation runs: 3
+Date range: 2025-09-06 to 2025-09-13
+
+🏆 BEST PERFORMANCE
+----------------------------------------
+Best run: eval_20250913_230719_cf758850_hybrid
+Approach: hybrid
+Accuracy: 0.7500
+F1 Score: 0.8571
+Timestamp: 2025-09-13T23:07:19.834739
+
+💰 COST ANALYSIS
+----------------------------------------
+Total spent: $0.387630
+Total tokens: 93,087
+Total API calls: 96
+Average cost per run: $0.129210
+
+Cost breakdown by approach:
+  ocr→llm: avg=$0.129210, total=$0.129210
+  vlm→direct: avg=$0.129210, total=$0.129210
+  hybrid: avg=$0.129210, total=$0.129210
+
+⚖️ MODEL COMPARISON
+----------------------------------------
+
+OCR→LLM:
+  Accuracy: 0.7500 ± nan
+  F1 Score: 0.8571 ± nan
+  Latency P95: 10.21 ± nan seconds
+
+VLM→DIRECT:
+  Accuracy: 0.5000 ± nan
+  F1 Score: 0.6667 ± nan
+  Latency P95: 20.09 ± nan seconds
+
+HYBRID:
+  Accuracy: 0.7500 ± nan
+  F1 Score: 0.8571 ± nan
+  Latency P95: 20.82 ± nan seconds
+
+================================================================================
