@@ -54,7 +54,7 @@ class EvaluationHarness:
         evaluator = ErrorDetectionEvaluator(dataset_path)
 
         # 3. Run OCR→LLM approach (baseline)
-        logger.info("Evaluating OCR→LLM approach (GPT-4V OCR → GPT-4o/Gemini reasoning)")
+        logger.info("Evaluating OCR→LLM approach (GPT-4o OCR → GPT-4o/Gemini reasoning)")
         ocr_llm_detector = ErrorDetector(approach="ocr_llm")
         ocr_llm_metrics = await evaluator.evaluate_model(
             ocr_llm_detector,
@@ -63,7 +63,7 @@ class EvaluationHarness:
         )
 
         # 4. Run Direct VLM approach
-        logger.info("Evaluating Direct VLM approach (GPT-4V or Gemini-2.5-Flash single call)")
+        logger.info("Evaluating Direct VLM approach (GPT-4o or Gemini-2.5-Flash single call)")
         vlm_direct_detector = ErrorDetector(approach="vlm_direct")
         vlm_direct_metrics = await evaluator.evaluate_model(
             vlm_direct_detector,
@@ -243,8 +243,8 @@ class EvaluationHarness:
         print("\nCost Estimation (per 100 requests):")
         cost_headers = ["Approach", "Estimated Cost", "Notes"]
         cost_rows = [
-            ["Direct VLM (Baseline)", f"${self._estimate_cost('vlm_direct', 100):.2f}", "GPT-4V single call - most cost-effective"],
-            ["OCR→LLM", f"${self._estimate_cost('ocr_llm', 100):.2f}", "GPT-4V OCR + GPT-4o reasoning - 2 API calls"],
+            ["Direct VLM (Baseline)", f"${self._estimate_cost('vlm_direct', 100):.2f}", "GPT-4o single call - most cost-effective"],
+            ["OCR→LLM", f"${self._estimate_cost('ocr_llm', 100):.2f}", "GPT-4o OCR + GPT-4o reasoning - 2 API calls"],
             ["Hybrid (Improvement)", f"${self._estimate_cost('hybrid', 100):.2f}", "Both approaches + ensemble - highest cost, potentially best accuracy"],
         ]
         print(tabulate.tabulate(cost_rows, headers=cost_headers, tablefmt="grid"))
@@ -345,11 +345,11 @@ class EvaluationHarness:
             cost_info = calculator.estimate_approach_cost(approach, num_requests)
             return cost_info["cost_per_100_requests"]
         except ValueError:
-            # Fallback to old estimates if approach not found
+            # Fallback to updated estimates if approach not found
             costs = {
-                "ocr_llm": 0.012,
-                "vlm_direct": 0.006,
-                "hybrid": 0.018,
+                "ocr_llm": 0.01075,    # From cost calculator: $0.010750 per request
+                "vlm_direct": 0.009,   # From cost calculator: $0.009000 per request
+                "hybrid": 0.01975,     # From cost calculator: $0.019750 per request
             }
             return costs.get(approach, 0.05) * num_requests
 

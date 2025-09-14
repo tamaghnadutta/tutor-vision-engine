@@ -28,8 +28,8 @@ async def run_single_approach_demo(approach: str, samples: list):
 
     # Map approach to description
     descriptions = {
-        'ocr_llm': 'GPT-4V extracts text → GPT-4o/Gemini analyzes for errors',
-        'vlm_direct': 'GPT-4V or Gemini-2.5-Flash analyzes images directly',
+        'ocr_llm': 'GPT-4o extracts text → GPT-4o/Gemini analyzes for errors',
+        'vlm_direct': 'GPT-4o or Gemini-2.5-Flash analyzes images directly',
         'hybrid': 'Runs both OCR→LLM and Direct VLM, ensembles results'
     }
     print(f"📋 Strategy: {descriptions.get(approach, 'Unknown approach')}")
@@ -197,8 +197,8 @@ async def run_demo(approach: str = "all"):
 
     if approach == "all":
         print(f"✅ Demonstrated all three approaches as per assignment:")
-        print(f"   • OCR→LLM: GPT-4V OCR → GPT-4o/Gemini reasoning")
-        print(f"   • Direct VLM: GPT-4V or Gemini-2.5-Flash single call")
+        print(f"   • OCR→LLM: GPT-4o OCR → GPT-4o/Gemini reasoning")
+        print(f"   • Direct VLM: GPT-4o or Gemini-2.5-Flash single call")
         print(f"   • Hybrid: Ensemble of both approaches")
     else:
         approach_names = {

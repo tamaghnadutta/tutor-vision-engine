@@ -5,6 +5,12 @@ Debug script to check why evaluation gets stuck and test with better error handl
 
 import asyncio
 import time
+import sys
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from src.models.error_detector import ErrorDetector
 from src.data.dataset import ErrorDetectionDataset
 
@@ -76,6 +82,4 @@ async def main():
     await test_individual_samples()
 
 if __name__ == "__main__":
-    import sys
-    sys.path.append('.')
     asyncio.run(main())

@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     error_detection_approach: str = Field(default="hybrid", env="ERROR_DETECTION_APPROACH")  # ocr_llm, vlm_direct, hybrid
 
     # OCR→LLM Configuration
-    ocr_provider: str = Field(default="gpt4v", env="OCR_PROVIDER")  # Which model to use for OCR
+    ocr_provider: str = Field(default="gpt4o", env="OCR_PROVIDER")  # Which model to use for OCR
     reasoning_provider: str = Field(default="auto", env="REASONING_PROVIDER")  # Which model to use for reasoning from OCR text
 
     model_config = {

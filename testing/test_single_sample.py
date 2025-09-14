@@ -6,7 +6,10 @@ Quick test of a single sample with Gemini robust provider
 import asyncio
 import time
 import sys
-sys.path.append('.')
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.models.error_detector import ErrorDetector
 from src.data.dataset import ErrorDetectionDataset

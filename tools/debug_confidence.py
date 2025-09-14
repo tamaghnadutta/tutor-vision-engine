@@ -5,7 +5,10 @@ Debug script to trace confidence values through the system
 
 import asyncio
 import sys
-sys.path.append('.')
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.models.error_detector import ErrorDetector
 

@@ -15,11 +15,16 @@ import asyncio
 import time
 import base64
 import io
+import sys
+from pathlib import Path
 from typing import Dict, Any, Optional
 import logging
 from PIL import Image
 from google import genai
 from google.genai import types
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.config.settings import get_settings
 
@@ -244,6 +249,4 @@ async def test_optimized_processor():
 
 
 if __name__ == "__main__":
-    import sys
-    sys.path.append('.')
     asyncio.run(test_optimized_processor())

@@ -30,6 +30,13 @@ help:
 	@echo "  load-test-vlm   - Load test Direct VLM approach"
 	@echo "  load-test-hybrid- Load test Hybrid approach"
 	@echo ""
+	@echo "Locust Load Testing:"
+	@echo "  locust-basic    - Start Locust web UI for interactive testing"
+	@echo "  locust-headless - Run headless Locust test (10 users, 60s)"
+	@echo "  locust-ocr      - Test OCR→LLM approach with Locust"
+	@echo "  locust-vlm      - Test Direct VLM approach with Locust"
+	@echo "  locust-hybrid   - Test Hybrid approach with Locust"
+	@echo ""
 	@echo "Analytics:"
 	@echo "  analytics       - Show analytics summary (last 7 days)"
 	@echo "  analytics-charts- Generate performance visualization charts"
@@ -103,11 +110,11 @@ test-hybrid:
 
 # Test API with monitoring dashboard
 test-monitoring:
-	python test_api_with_monitoring.py
+	python monitoring/test_api_with_monitoring.py
 
 # Test complete solution areas (use with ERROR_DETECTION_APPROACH env var)
 test-complete-areas:
-	python test_complete_solution_areas.py
+	python testing/test_complete_solution_areas.py
 
 # Evaluation for assignment submission (baseline vs improvement)
 eval-assignment:
@@ -141,6 +148,22 @@ load-test-vlm:
 
 load-test-hybrid:
 	python scripts/load_test.py --approach hybrid --requests 30 --concurrent 5
+
+# Locust load testing
+locust-basic:
+	locust -f scripts/locustfile.py --host=http://localhost:8000
+
+locust-headless:
+	locust -f scripts/locustfile.py --host=http://localhost:8000 -u 10 -r 2 --run-time 60s --headless
+
+locust-ocr:
+	ERROR_DETECTION_APPROACH=ocr_llm locust -f scripts/locustfile.py --host=http://localhost:8000 -u 5 -r 1 --run-time 30s --headless
+
+locust-vlm:
+	ERROR_DETECTION_APPROACH=vlm_direct locust -f scripts/locustfile.py --host=http://localhost:8000 -u 5 -r 1 --run-time 30s --headless
+
+locust-hybrid:
+	ERROR_DETECTION_APPROACH=hybrid locust -f scripts/locustfile.py --host=http://localhost:8000 -u 5 -r 1 --run-time 30s --headless
 
 # Cleanup
 clean:

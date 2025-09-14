@@ -2,235 +2,258 @@
 
 ## Overview
 
-The Error Detection API is designed as a scalable, reliable system for analyzing handwritten mathematical solutions and providing step-level error detection with educational feedback.
+The Error Detection API is a production-ready system implementing three distinct error detection approaches for educational math solutions. Built with FastAPI, it supports concurrent processing, comprehensive monitoring, and cost-effective scaling.
 
 ## Architecture Diagram
 
 ```mermaid
 graph TD
     A[Client Request] --> B[FastAPI Gateway]
-    B --> C{Authentication}
+    B --> C{API Key Auth}
     C -->|Valid| D[Request Validation]
     C -->|Invalid| E[401 Error]
     D --> F[Error Detector]
-    F --> G[Image Download]
-    G --> H{Processing Approach}
+    F --> G[Image Download & Processing]
+    G --> H{Approach Selection}
 
-    H -->|OCR+LLM| I[OCR Processor]
-    H -->|VLM Direct| J[VLM Reasoner]
-    H -->|Hybrid| K[Both Paths]
+    H -->|OCR→LLM| I[OCR→LLM Approach]
+    H -->|Direct VLM| J[Direct VLM Approach]
+    H -->|Hybrid| K[Hybrid Approach]
 
-    I --> L[LLM Reasoner]
-    J --> M[Vision Analysis]
-    K --> N[Result Fusion]
-    L --> N
-    M --> N
+    I --> I1[GPT-4o OCR Extraction]
+    I1 --> I2[GPT-4o/Gemini Reasoning]
+    I2 --> N[Response Formation]
 
-    N --> O[Response Formation]
-    O --> P[Persistence Layer]
-    O --> Q[Metrics Collection]
+    J --> J1[GPT-4o/Gemini Direct Analysis]
+    J1 --> N
+
+    K --> K1[Run Both Approaches]
+    K1 --> K2[Confidence-based Ensemble]
+    K2 --> N
+
+    N --> O[Structured Response]
+    O --> P[Metrics Collection]
+    O --> Q[Request Persistence]
     O --> R[Client Response]
 
-    P --> S[(SQLite/JSON Store)]
-    Q --> T[Prometheus Metrics]
+    P --> S[Prometheus Metrics]
+    Q --> T[(SQLite Database)]
+    Q --> U[Analytics Storage]
 
-    subgraph "OCR Backends"
-        I1[Tesseract]
-        I2[Azure CV]
-        I3[Google Vision]
+    subgraph "Model Providers"
+        M1[OpenAI GPT-4o]
+        M2[Gemini 2.5 Flash]
     end
 
-    subgraph "LLM Providers"
-        L1[OpenAI GPT-4]
-        L2[Anthropic Claude]
+    subgraph "Monitoring Stack"
+        S --> V[Grafana Dashboard]
+        S --> W[Alert Manager]
     end
 
-    subgraph "VLM Providers"
-        J1[OpenAI GPT-4V]
-    end
-
-    I --> I1
-    I --> I2
-    I --> I3
-    L --> L1
-    L --> L2
-    J --> J1
+    I1 --> M1
+    I2 --> M1
+    I2 --> M2
+    J1 --> M1
+    J1 --> M2
+    K1 --> M1
+    K1 --> M2
 ```
 
-## Components & Data Flow
+## Current Implementation Details
 
-### 1. API Gateway Layer
-- **FastAPI Application**: Handles HTTP routing, middleware, CORS
-- **Authentication**: API key validation with constant-time comparison
-- **Request Validation**: Pydantic schema validation for type safety
-- **Rate Limiting**: Middleware for request throttling (optional)
+### 1. API Layer (`src/api/`)
+- **FastAPI Application** with async request handling
+- **Middleware Stack**: CORS, Security, Logging, Metrics
+- **Authentication**: Bearer token validation with constant-time comparison
+- **Request/Response Schemas**: Pydantic models with comprehensive validation
+- **Health Endpoints**: `/health` and `/metrics` for monitoring
 
-### 2. Processing Pipeline
+### 2. Three Error Detection Approaches (`src/models/`)
 
-#### Image Processing
-1. **Image Download**: Concurrent fetching of question/solution images
-2. **Validation**: Size limits, format checking
-3. **Preprocessing**: Resizing, bounding box application
+#### OCR→LLM Approach
+- **Step 1**: GPT-4o vision model extracts text from images
+- **Step 2**: GPT-4o or Gemini analyzes extracted text for errors
+- **Benefits**: Precise text extraction, structured reasoning
+- **Cost**: $0.011 per request (2 API calls)
 
-#### Error Detection Approaches
-- **OCR + LLM**: Extract text via OCR, analyze with language model
-- **VLM Direct**: Direct vision-language model analysis
-- **Hybrid**: Combine both approaches for best accuracy
+#### Direct VLM Approach
+- **Single Call**: GPT-4o or Gemini analyzes images directly
+- **Benefits**: Fast processing, handles visual/spatial elements
+- **Cost**: $0.009 per request (1 API call)
 
-#### Analysis Flow
-1. **Text Extraction** (OCR path): Multiple backend support with fallbacks
-2. **Reasoning**: Mathematical error analysis using LLMs/VLMs
-3. **Result Fusion** (Hybrid): Intelligent combination of results
+#### Hybrid Approach
+- **Multi-path**: Runs both OCR→LLM and Direct VLM concurrently
+- **Ensemble**: Confidence-based result combination
+- **Benefits**: Highest accuracy, fault tolerance
+- **Cost**: $0.020 per request (3 API calls)
 
-### 3. Persistence & Observability
-- **Request/Response Storage**: SQLite for development, configurable backends
-- **Structured Logging**: Request tracking, error logging
-- **Metrics**: Prometheus-compatible metrics for monitoring
+### 3. Model Router & Provider System (`src/models/model_router.py`)
+- **Multi-provider Support**: OpenAI GPT-4o and Gemini 2.5 Flash
+- **Automatic Fallbacks**: Provider failures handled gracefully
+- **Structured Outputs**: Pydantic schema enforcement across providers
+- **Token Tracking**: Comprehensive cost calculation and monitoring
 
-## Request Lifecycle
+### 4. Monitoring & Observability (`src/utils/`)
 
-### Normal Flow
+#### Prometheus Metrics (`src/utils/metrics.py`)
+- HTTP request metrics (rate, latency, errors)
+- Error detection specific metrics (approach usage, accuracy)
+- Cost tracking and token usage
+- Concurrent request monitoring
+
+#### API Tracker (`src/utils/api_tracker.py`)
+- Real-time API call monitoring
+- Cost calculation per request
+- Session-based tracking
+- Performance analytics
+
+#### Analytics Storage (`src/analytics/`)
+- Historical data storage and analysis
+- Performance trend tracking
+- Cost optimization insights
+- Usage pattern analysis
+
+### 5. Configuration Management (`src/config/settings.py`)
+- Environment-based configuration
+- Model provider selection (OpenAI/Gemini/Auto)
+- Approach selection (OCR→LLM/Direct VLM/Hybrid)
+- Performance tuning parameters
+
+## Request Processing Flow
+
+### 1. Request Lifecycle
 ```
-Client Request → Auth → Validation → Processing → Response → Audit
-    ↓
-Request ID assigned, logging starts
-    ↓
-Concurrent image downloads (with timeout)
-    ↓
-Error detection processing (with timeout)
-    ↓
-Response formatting and metrics collection
-    ↓
-Background persistence and cleanup
+1. Client Request → API Key Validation
+2. Schema Validation → Request ID Assignment
+3. Image Download (concurrent) → Timeout Protection
+4. Approach Execution → Model API Calls
+5. Result Processing → Response Formatting
+6. Metrics Collection → Database Persistence
+7. Client Response → Background Analytics
 ```
 
-### Error Handling
-- **Graceful Degradation**: Return partial results when possible
-- **Timeout Management**: 30s request timeout with early termination
-- **Retry Logic**: Built into OCR backends with exponential backoff
-- **Circuit Breakers**: Fail fast on repeated external service failures
+### 2. Error Detection Pipeline
+```
+Question Image + Solution Image + Bounding Box
+    ↓
+Approach Selection (Environment Variable)
+    ↓
+┌─ OCR→LLM: GPT-4o OCR → GPT-4o/Gemini Analysis
+├─ Direct VLM: GPT-4o/Gemini Direct Analysis
+└─ Hybrid: Both approaches → Confidence Ensemble
+    ↓
+Structured Response (Error + Correction + Hint)
+```
 
-## Concurrency & Performance
+## Performance & Scalability
 
-### Concurrency Controls
-- **Semaphore-based limiting**: Max 10 concurrent requests (configurable)
-- **Async processing**: Non-blocking I/O throughout the pipeline
-- **Background tasks**: Persistence operations don't block responses
+### Concurrency Features
+- **Async/Await**: Non-blocking I/O throughout
+- **Semaphore Limits**: Configurable concurrent request limits
+- **Connection Pooling**: Persistent HTTP connections
+- **Background Tasks**: Non-blocking persistence and analytics
 
 ### Performance Optimizations
-- **Image caching**: Optional Redis caching for repeated images
-- **Model caching**: Persistent connections to LLM providers
-- **Batch processing**: Group similar requests when possible
+- **Image Processing**: PIL-based optimization and resizing
+- **Model Caching**: Provider connection reuse
+- **Response Streaming**: Large response handling
+- **Timeout Management**: 30s request timeout with graceful degradation
 
-## Scalability Considerations
+### Scalability Design
+- **Stateless Architecture**: No server-side session state
+- **Database Abstraction**: Easy SQLite → PostgreSQL migration
+- **Config-driven**: Environment-based scaling parameters
+- **Load Balancer Ready**: Health checks and graceful shutdown
+
+## Cost Management & Analytics
+
+### Cost Calculator (`src/utils/cost_calculator.py`)
+- **Real-time Pricing**: 2025 GPT-4o and Gemini pricing
+- **Per-request Calculation**: Token-based cost tracking
+- **Approach Comparison**: Cost/performance trade-off analysis
+- **Budget Monitoring**: Configurable cost alerts
+
+### Analytics Dashboard
+- **Historical Analysis**: Request patterns and performance trends
+- **Cost Optimization**: Provider and approach efficiency metrics
+- **Usage Insights**: Peak hours, error patterns, user behavior
+- **Export Capabilities**: CSV data export for external analysis
+
+## Security & Reliability
+
+### Authentication & Authorization
+- **API Key Authentication**: Required for all endpoints
+- **Constant-time Comparison**: Timing attack protection
+- **Request Rate Limiting**: DoS protection
+- **Input Validation**: Comprehensive schema enforcement
+
+### Error Handling & Resilience
+- **Graceful Degradation**: Return partial results when possible
+- **Provider Fallbacks**: Automatic switching on failures
+- **Circuit Breaker Pattern**: Fail-fast on repeated failures
+- **Comprehensive Logging**: Structured error reporting
+
+### Data Privacy & Security
+- **PII Handling**: User ID anonymization
+- **Request Sanitization**: Input validation and cleaning
+- **Audit Trail**: Complete request/response logging
+- **Secure Defaults**: HTTPS-only in production
+
+## Technology Stack
+
+### Core Technologies
+- **FastAPI**: High-performance async API framework
+- **SQLAlchemy**: Database ORM with async support
+- **Pydantic**: Data validation and schema enforcement
+- **Prometheus**: Metrics collection and monitoring
+- **SQLite/PostgreSQL**: Development/production databases
+
+### AI/ML Integration
+- **OpenAI GPT-4o**: Primary vision and language model
+- **Gemini 2.5 Flash**: Alternative provider and cost optimization
+- **Multi-model Router**: Seamless provider switching
+- **Structured Outputs**: Schema-enforced model responses
+
+### Monitoring & DevOps
+- **Grafana**: Visualization and alerting dashboards
+- **Docker Compose**: Local development environment
+- **Locust**: Comprehensive load testing
+- **GitHub Actions**: CI/CD pipeline ready
+
+## Deployment Architecture
+
+### Development Environment
+```
+Local Machine:
+├── FastAPI Server (uvicorn)
+├── SQLite Database
+├── Prometheus/Grafana (Docker)
+└── Locust Load Testing
+```
+
+### Production Environment
+```
+Load Balancer → FastAPI Instances
+                      ↓
+              PostgreSQL Database
+                      ↓
+            Prometheus/Grafana Stack
+                      ↓
+              External Monitoring
+```
+
+## Future Scaling Paths
 
 ### Horizontal Scaling
-- **Stateless Design**: No server-side session state
-- **Load Balancer Ready**: Health checks and graceful shutdown
-- **Database Scaling**: Easy migration from SQLite to PostgreSQL/MySQL
+- **Kubernetes Deployment**: Pod auto-scaling
+- **Database Clustering**: Read replicas and sharding
+- **Cache Layer**: Redis for session and result caching
+- **CDN Integration**: Image processing optimization
 
-### Vertical Scaling
-- **Resource Limits**: Configurable memory and CPU limits
-- **Connection Pooling**: Efficient use of external API connections
-- **Background Processing**: Separate worker processes for heavy tasks
+### Advanced Features
+- **Batch Processing**: Bulk error detection jobs
+- **Real-time Updates**: WebSocket result streaming
+- **Machine Learning**: Custom model training on collected data
+- **Multi-language Support**: Internationalization framework
 
-### Caching Strategy
-```
-Level 1: In-memory LRU cache (request results)
-Level 2: Redis cache (image processing results)
-Level 3: Database cache (historical results)
-```
-
-## Reliability & Security
-
-### Failure Modes & Handling
-- **Network Failures**: Retry with exponential backoff
-- **Model API Failures**: Graceful fallback to simpler approaches
-- **Image Processing Failures**: Return diagnostic information
-- **Database Failures**: Fall back to JSON file storage
-
-### Security Measures
-- **API Key Authentication**: Required for all endpoints
-- **Request Sanitization**: Strict input validation
-- **Rate Limiting**: Prevent abuse and DoS attacks
-- **HTTPS Only**: TLS encryption in production
-- **PII Handling**: User ID hashing for privacy
-
-### Circuit Breaker Pattern
-```python
-External Service → Circuit Breaker → Fallback Strategy
-    ↓
-- Closed: Normal operation
-- Open: Fail fast after repeated failures
-- Half-Open: Test recovery
-```
-
-## Performance & Cost Controls
-
-### Token/Vision Budget Management
-- **Request Quotas**: Per-user and global limits
-- **Model Selection**: Automatic downgrade under high load
-- **Prompt Optimization**: Efficient prompt engineering
-- **Image Downscaling**: Reduce processing costs
-
-### Cost Monitoring
-- **Real-time Tracking**: Token usage and API costs
-- **Budget Alerts**: Automatic notifications on threshold breach
-- **Usage Analytics**: Per-user cost attribution
-
-## Technology Trade-offs
-
-### 1. Database Choice: SQLite vs PostgreSQL
-**Chose SQLite for MVP:**
-- ✅ Zero configuration setup
-- ✅ Perfect for development and small deployments
-- ✅ ACID compliance and reliability
-- ❌ Limited concurrent writes
-- ❌ No advanced features (JSON queries, etc.)
-
-**Migration Path:** Easy transition to PostgreSQL using SQLAlchemy ORM
-
-### 2. Processing Approach: OCR+LLM vs VLM vs Hybrid
-**Chose Hybrid:**
-- ✅ Best accuracy by combining approaches
-- ✅ Fallback options if one method fails
-- ✅ Can optimize cost/performance per request
-- ❌ Higher latency and cost
-- ❌ More complex system
-
-### 3. Async vs Sync: FastAPI vs Flask
-**Chose FastAPI:**
-- ✅ Native async support for better concurrency
-- ✅ Automatic API documentation
-- ✅ Built-in request validation
-- ✅ Type hints throughout
-- ❌ Slightly higher learning curve
-
-### 4. Storage: Files vs Database vs Cloud
-**Chose Hybrid Approach:**
-- Development: SQLite + JSON files
-- Production: PostgreSQL + S3/GCS
-- ✅ Flexible deployment options
-- ✅ Cost-effective scaling path
-- ❌ Additional complexity
-
-## Monitoring & Observability
-
-### Key Metrics
-- Request rate, latency percentiles (p50/p90/p95)
-- Error rates by type and endpoint
-- Model usage and costs
-- Concurrent request levels
-
-### Alerting Thresholds
-- p95 latency > 10s
-- Error rate > 5%
-- Concurrent requests > 90% of limit
-- Model API failures > 10%
-
-### Health Checks
-- `/health`: Basic service health
-- `/metrics`: Prometheus metrics
-- Deep health checks: Database, external APIs
-
-This architecture provides a solid foundation for the Error Detection API with clear scaling paths and robust error handling.
+This architecture delivers a robust, scalable error detection system with comprehensive monitoring, cost optimization, and production-ready reliability features.

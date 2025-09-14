@@ -6,13 +6,13 @@ An AI-powered educational platform API that provides real-time feedback on stude
 
 This system implements and compares three error detection approaches:
 
-1. **OCR→LLM**: GPT-4V extracts text → GPT-4o/Gemini analyzes for errors (Baseline)
-2. **Direct VLM**: GPT-4V or Gemini-2.5-Flash analyzes images directly
+1. **OCR→LLM**: GPT-4o extracts text → GPT-4o/Gemini analyzes for errors (Baseline)
+2. **Direct VLM**: GPT-4o or Gemini-2.5-Flash analyzes images directly
 3. **Hybrid**: Ensemble of both approaches with confidence scoring (Improvement)
 
 The API analyzes student work and identifies step-level errors in mathematical solutions, providing educational feedback including error descriptions, corrections, and hints.
 
-## 🎯 Assignment Compliance
+## 🎯 Assignment
 
 ### ✅ **Modeling & Data**
 - **Three Approaches**: OCR→LLM, Direct VLM, and Hybrid implementations
@@ -81,6 +81,10 @@ cp .env.sample .env
 # - GEMINI_API_KEY=your_gemini_key_here
 # - ERROR_DETECTION_APPROACH=hybrid  # ocr_llm, vlm_direct, or hybrid
 
+# IMPORTANT: Start local image server (required for sample images)
+# In a separate terminal window:
+python -m http.server 8080
+
 # Run comprehensive demo (all approaches)
 make demo
 
@@ -91,37 +95,80 @@ make eval
 ### Quick Commands
 
 ```bash
+# Setup & Development
+make setup             # Install dependencies and initialize project
+make dev               # Start development server (http://localhost:8000)
+                       # NOTE: Also run 'python -m http.server 8080' for sample images
+make test              # Run test suite with coverage
+make lint              # Check code quality
+make clean             # Clean build artifacts
+
 # Assignment Requirements
-make eval              # Comprehensive evaluation (all approaches)
-make eval-assignment   # Baseline vs improvement evaluation
+make eval              # Comprehensive evaluation (all 3 approaches)
+make eval-detailed     # Run evaluation with detailed output
+make eval-assignment   # Assignment-compliant baseline vs improvement
 make demo              # Demo all three approaches
+make demo-compare      # Quick comparison of all approaches
 
 # Individual Approach Testing
-make demo-ocr-llm      # Test OCR→LLM (baseline)
-make demo-vlm          # Test Direct VLM
-make demo-hybrid       # Test Hybrid (improvement)
+make demo-ocr-llm      # Demo OCR→LLM approach only (baseline)
+make demo-vlm          # Demo Direct VLM approach only
+make demo-hybrid       # Demo Hybrid approach only (improvement)
 
-# Development
-make dev               # Start API server
-make test              # Run tests
-make help              # Show all commands
+# Environment Variable Testing
+make test-ocr-llm      # Test OCR→LLM with environment variable
+make test-vlm-direct   # Test Direct VLM with environment variable
+make test-hybrid       # Test Hybrid with environment variable
+
+# Load Testing & Performance
+make load-test         # Run async performance load test
+make load-test-ocr     # Load test OCR→LLM approach (30 requests, 5 concurrent)
+make load-test-vlm     # Load test Direct VLM approach (30 requests, 5 concurrent)
+make load-test-hybrid  # Load test Hybrid approach (30 requests, 5 concurrent)
+
+# Locust Load Testing (Advanced)
+make locust-basic      # Start Locust web UI for interactive testing
+make locust-headless   # Run headless Locust test (10 users, 60s)
+make locust-ocr        # Test OCR→LLM approach with Locust (5 users, 30s)
+make locust-vlm        # Test Direct VLM approach with Locust (5 users, 30s)
+make locust-hybrid     # Test Hybrid approach with Locust (5 users, 30s)
+
+# Monitoring & Observability
+make monitoring-up     # Start Prometheus & Grafana monitoring stack
+make monitoring-down   # Stop monitoring stack
+make monitoring-logs   # View monitoring container logs
+make test-monitoring   # Generate API traffic for monitoring dashboard
+
+# Analytics & Reporting
+make analytics         # Show analytics summary (last 7 days)
+make analytics-charts  # Generate performance visualization charts
+make analytics-report  # Generate detailed analytics report
+make analytics-export  # Export analytics data to CSV
+make analytics-clean   # Clean old cache and analytics data
+
+# Data & Testing
+make create-dataset    # Generate dataset from sample images
+make test-complete-areas # Test complete solution area detection
+
+# Help
+make help              # Show all available commands with descriptions
 ```
 
 ## 🔧 Three Approaches Explained
 
 ### 1. OCR→LLM (Baseline)
 ```
-Image → GPT-4V (OCR) → Extracted Text → GPT-4o/Gemini (Reasoning) → Error Analysis
+Image → GPT-4o (OCR) → Extracted Text → GPT-4o/Gemini (Reasoning) → Error Analysis
 ```
-- **Cost**: $0.012 per request (2 API calls)
+- **Cost**: $0.011 per request (2 API calls)
 - **Speed**: Moderate (sequential processing)
 - **Accuracy**: Good text extraction + reasoning
 
 ### 2. Direct VLM
 ```
-Images → GPT-4V/Gemini-2.5-Flash → Direct Error Analysis
+Images → GPT-4o/Gemini-2.5-Flash → Direct Error Analysis
 ```
-- **Cost**: $0.006 per request (1 API call)
+- **Cost**: $0.009 per request (1 API call)
 - **Speed**: Fast (single model call)
 - **Accuracy**: End-to-end vision reasoning
 
@@ -129,7 +176,7 @@ Images → GPT-4V/Gemini-2.5-Flash → Direct Error Analysis
 ```
 Images → [OCR→LLM + Direct VLM] → Confidence Scoring → Ensemble Result
 ```
-- **Cost**: $0.018 per request (3 API calls)
+- **Cost**: $0.020 per request (3 API calls)
 - **Speed**: Slower (parallel processing)
 - **Accuracy**: Best of both approaches
 
@@ -190,7 +237,7 @@ The system provides comprehensive metrics comparing all three approaches:
 | Accuracy | 0.825 | 0.780 | 0.890 | Hybrid |
 | F1 Score | 0.810 | 0.765 | 0.875 | Hybrid |
 | Latency p95 | 8.5s | 4.2s | 9.1s | Direct VLM |
-| Cost/100 reqs | $1.20 | $0.60 | $1.80 | Direct VLM |
+| Cost/100 reqs | $1.07 | $0.90 | $1.98 | Direct VLM |
 
 **Assignment Compliance**: ✅ Comprehensive ablation study with Direct VLM baseline
 
@@ -203,9 +250,85 @@ Control approach selection via environment variables:
 ERROR_DETECTION_APPROACH=hybrid    # ocr_llm, vlm_direct, hybrid
 OPENAI_API_KEY=your_key_here
 GEMINI_API_KEY=your_key_here
-OCR_PROVIDER=gpt4v                 # OCR model for OCR→LLM
+OCR_PROVIDER=gpt4o                 # OCR model for OCR→LLM
 REASONING_PROVIDER=auto            # Reasoning model: auto, openai, gemini
+API_KEY=test-api-key-123           # API authentication key
 ```
+
+## 📊 Monitoring & Observability
+
+The system includes comprehensive monitoring capabilities:
+
+### Prometheus & Grafana Stack
+
+```bash
+# Start monitoring stack
+make monitoring-up
+
+# Access dashboards
+# Grafana: http://localhost:3000 (admin/admin)
+# Prometheus: http://localhost:9090
+# API Metrics: http://localhost:8000/metrics
+
+# Generate test traffic
+make test-monitoring
+
+# Stop monitoring
+make monitoring-down
+```
+
+**Metrics Tracked:**
+- Request/response times (p50, p90, p95)
+- Error detection rates by approach
+- API endpoint performance
+- Cost estimation and token usage
+- Concurrent request handling
+
+### Analytics Dashboard
+
+```bash
+# View analytics summary
+make analytics
+
+# Generate performance charts
+make analytics-charts
+
+# Export data for analysis
+make analytics-export
+
+# Generate detailed report
+make analytics-report
+```
+
+## 🧪 Load Testing
+
+Multiple load testing options available:
+
+### Python AsyncIO Load Testing
+```bash
+make load-test-ocr     # Test OCR→LLM with 30 requests, 5 concurrent
+make load-test-vlm     # Test Direct VLM with 30 requests, 5 concurrent
+make load-test-hybrid  # Test Hybrid with 30 requests, 5 concurrent
+```
+
+### Locust Load Testing (Advanced)
+```bash
+# Interactive web UI testing
+make locust-basic
+
+# Automated headless testing
+make locust-headless   # 10 users, 60 seconds
+make locust-ocr        # OCR→LLM specific load test
+make locust-vlm        # Direct VLM specific load test
+make locust-hybrid     # Hybrid specific load test
+```
+
+**Load Testing Features:**
+- Realistic user behavior simulation
+- Multiple task scenarios (random samples, focused testing, different bounding boxes)
+- Custom metrics collection for error detection
+- Environment variable configuration
+- Detailed performance reporting
 
 ## 📁 Project Structure
 
@@ -255,18 +378,41 @@ make setup
 cp .env.sample .env
 # Add your API keys to .env
 
-# 2. Run evaluation (assignment requirement)
+# 2. Start local image server (REQUIRED - keep running)
+# In a separate terminal window:
+python -m http.server 8080
+
+# 3. Run evaluation (assignment requirement)
 make eval
 
-# 3. Run demo (see all approaches)
+# 4. Run demo (see all approaches)
 make demo
 
-# 4. Explore individual approaches
+# 5. Explore individual approaches
 make demo-ocr-llm     # Baseline
 make demo-hybrid      # Improvement
+
+# 6. Optional: Performance testing & monitoring
+make monitoring-up    # Start monitoring dashboard
+make load-test        # Test system performance
+make analytics        # View analytics summary
 ```
 
 **Expected Output**: Comprehensive metrics table showing baseline vs improvement with ablation analysis as required by assignment.
+
+### Full Command Reference
+
+For a complete list of all available commands:
+```bash
+make help
+```
+
+**Key Command Categories:**
+- **Setup & Dev**: `setup`, `dev`, `test`, `lint`, `clean`
+- **Assignment**: `eval`, `eval-assignment`, `demo`, `demo-*`
+- **Performance**: `load-test-*`, `locust-*`
+- **Monitoring**: `monitoring-*`, `analytics-*`, `test-monitoring`
+- **Data**: `create-dataset`, `test-complete-areas`
 
 ## 📈 Performance Metrics
 
