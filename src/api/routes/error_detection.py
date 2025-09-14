@@ -86,6 +86,33 @@ async def detect_error(
         REQUEST_DURATION.labels(method="POST", endpoint="/detect-error").observe(duration)
         REQUEST_COUNT.labels(method="POST", endpoint="/detect-error", status="200").inc()
 
+        # Track error detection specific metrics
+        from src.utils.metrics import ERROR_DETECTION_COUNT, ERROR_DETECTION_DURATION, MODEL_USAGE_COUNT
+
+        # Normalize approach name for consistent metrics
+        raw_approach = result.get('processing_approach', 'unknown')
+        if 'ocr_llm' in raw_approach:
+            approach = 'ocr_llm'
+        elif 'vlm_direct' in raw_approach or 'direct_vlm' in raw_approach:
+            approach = 'vlm_direct'
+        elif 'hybrid' in raw_approach:
+            approach = 'hybrid'
+        else:
+            approach = 'unknown'
+
+        has_error = bool(result.get('error'))
+
+        # Record error detection metrics
+        ERROR_DETECTION_COUNT.labels(
+            approach=approach,
+            has_error=str(has_error).lower()
+        ).inc()
+        ERROR_DETECTION_DURATION.labels(approach=approach).observe(duration)
+
+        # Track model usage (if available)
+        if result.get('llm_used'):
+            MODEL_USAGE_COUNT.labels(provider='openai', model='gpt-4o').inc()
+
         # Save request/response for auditing (background task)
         background_tasks.add_task(
             save_request_response,

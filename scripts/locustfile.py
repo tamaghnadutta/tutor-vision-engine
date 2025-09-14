@@ -25,7 +25,7 @@ import random
 import time
 import logging
 from typing import Dict, List, Any
-from locust import HttpUser, task, between, events
+from locust import HttpUser, task, between, events, LoadTestShape
 from locust.env import Environment
 from dotenv import load_dotenv
 
@@ -287,6 +287,45 @@ def on_request(request_type, name, response_time, response_length, response=None
         if exception:
             logger.warning(f"Request failed: {name} - {exception}")
         # Could send custom metrics to monitoring systems here
+
+
+class StepLoadShape(LoadTestShape):
+    """
+    Custom load shape: Step-up, Constant, Step-down pattern
+
+    Pattern:
+    - 0-30s: Ramp up from 0 to 5 users (step-up)
+    - 30s-150s: Maintain 5 users (2-minute constant period)
+    - 150s-180s: Ramp down from 5 to 0 users (step-down)
+    Total duration: 3 minutes
+    """
+
+    def tick(self):
+        """Define the load pattern based on current time"""
+        run_time = self.get_run_time()
+
+        # Step 1: Ramp up (0-30 seconds)
+        if run_time < 30:
+            user_count = int((run_time / 30) * 5)  # Gradually increase to 5 users
+            spawn_rate = 1  # Spawn 1 user per second
+            return (user_count, spawn_rate)
+
+        # Step 2: Constant load (30-150 seconds = 2 minutes)
+        elif run_time < 150:
+            user_count = 5  # Maintain 5 concurrent users
+            spawn_rate = 0  # No new spawning needed
+            return (user_count, spawn_rate)
+
+        # Step 3: Ramp down (150-180 seconds)
+        elif run_time < 180:
+            remaining_time = 180 - run_time
+            user_count = int((remaining_time / 30) * 5)  # Gradually decrease from 5 to 0
+            spawn_rate = 1  # Remove 1 user per second
+            return (user_count, spawn_rate)
+
+        # Test complete
+        else:
+            return None
         pass
 
 # Configuration for different test scenarios

@@ -14,7 +14,7 @@ from prometheus_client import generate_latest
 from starlette.responses import Response
 
 from src.api.routes import error_detection
-from src.api.middleware import LoggingMiddleware, SecurityMiddleware
+from src.api.middleware import LoggingMiddleware, SecurityMiddleware, ConcurrencyLimitMiddleware
 from src.config.settings import get_settings
 from src.utils.logging import setup_logging
 from src.utils.metrics import setup_metrics, registry
@@ -57,6 +57,7 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(ConcurrencyLimitMiddleware, max_concurrent_requests=settings.max_concurrent_requests)
     app.add_middleware(LoggingMiddleware)
     app.add_middleware(SecurityMiddleware)
 

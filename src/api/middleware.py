@@ -60,7 +60,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 
 
 class ConcurrencyLimitMiddleware(BaseHTTPMiddleware):
-    """Middleware to limit concurrent requests"""
+    """Middleware to limit concurrent requests and track metrics"""
 
     def __init__(self, app, max_concurrent_requests: int = 10):
         super().__init__(app)
@@ -68,6 +68,8 @@ class ConcurrencyLimitMiddleware(BaseHTTPMiddleware):
         self.current_requests = 0
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        from src.utils.metrics import CONCURRENT_REQUESTS
+
         # Check concurrency limit
         if self.current_requests >= self.max_concurrent_requests:
             logger.warning(
@@ -81,8 +83,11 @@ class ConcurrencyLimitMiddleware(BaseHTTPMiddleware):
 
         # Process request
         self.current_requests += 1
+        CONCURRENT_REQUESTS.set(self.current_requests)  # Update Prometheus metric
+
         try:
             response = await call_next(request)
             return response
         finally:
             self.current_requests -= 1
+            CONCURRENT_REQUESTS.set(self.current_requests)  # Update Prometheus metric

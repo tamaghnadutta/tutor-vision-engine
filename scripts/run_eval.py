@@ -92,7 +92,6 @@ class EvaluationHarness:
         # 7. Compile comprehensive results
         # Capture API usage data
         api_usage_summary = api_tracker.get_session_summary()
-
         self.results = {
             'ocr_llm_metrics': ocr_llm_metrics,
             'vlm_direct_metrics': vlm_direct_metrics,
