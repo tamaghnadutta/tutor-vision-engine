@@ -32,7 +32,19 @@ The API analyzes student work and identifies step-level errors in mathematical s
 - **Clean Components**: Modular approach implementations
 - **Configurable**: Environment variables control approach selection
 - **Scalable**: Stateless API design with async processing
-- **Reliability**: Timeout handling, retries, and graceful degradation
+- **Scalability**: Production-ready scaling architecture
+  - ✅ **Stateless Design**: No server-side session state, horizontal scaling ready
+  - ✅ **Caching**: Result caching with expiration (`src/analytics/result_storage.py`)
+  - ✅ **Async Processing**: Background job handling with job IDs
+- **Reliability & Security**: Comprehensive failure handling and data protection
+  - ✅ **Circuit Breakers**: Provider fallbacks and graceful degradation (`src/models/robust_model_router.py`)
+  - ✅ **Secrets Management**: Environment-based API key handling
+  - ✅ **PII Protection**: User ID hashing and request sanitization
+  - ✅ **Timeouts & Retries**: 30s timeouts with exponential backoff (3 attempts)
+- **Performance & Cost Controls**: Resource optimization and budget management
+  - ✅ **Token Tracking**: Complete usage monitoring (`src/utils/api_tracker.py`)
+  - ✅ **Image Optimization**: Auto-downscaling to 2048px with compression
+  - ✅ **Cost Calculation**: Real-time per-request cost analysis (`src/utils/cost_calculator.py`)
 
 ### ✅ **Performance & Cost**
 - **Latency Metrics**: Reports p50/p90/p95 end-to-end latency
@@ -205,6 +217,26 @@ Images → [OCR→LLM + Direct VLM] → Confidence Scoring → Ensemble Result
 ```
 
 **Note**: `bounding_box` specifies the edited area coordinates. The API will crop the solution image to this region for focused analysis.
+
+### Sample cURL Command
+
+```bash
+curl -X POST http://localhost:8000/api/v1/detect-error \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer test-api-key-123" \
+  -d '{
+    "question_url": "http://localhost:8080/data/sample_images/questions/Q1_algebra_quadratic.png",
+    "solution_url": "http://localhost:8080/data/sample_images/attempts/Q1_attempt1.png",
+    "bounding_box": {
+      "minX": 100,
+      "maxX": 500,
+      "minY": 50,
+      "maxY": 200
+    },
+    "user_id": "demo_user_123",
+    "session_id": "demo_session_456"
+  }'
+```
 
 ### Response
 
