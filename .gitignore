@@ -68,9 +68,13 @@ htmlcov/
 # Jupyter Notebooks
 .ipynb_checkpoints
 
-# Model artifacts
-models/
+# Model artifacts (exclude ML model files, but keep source code)
+/models/
 checkpoints/
+*.pkl
+*.pth
+*.h5
+*.onnx
 
 # Temporary files
 tmp/
