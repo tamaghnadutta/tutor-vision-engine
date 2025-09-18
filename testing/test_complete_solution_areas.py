@@ -16,7 +16,7 @@ load_dotenv()
 
 # API Configuration
 API_BASE_URL = "http://localhost:8000"
-API_KEY = os.getenv("API_KEY", "test-api-key-123")
+API_KEY = os.getenv("API_KEY", "abcd123")
 
 # Error detection approach selection
 ERROR_DETECTION_APPROACH = os.getenv("ERROR_DETECTION_APPROACH", "hybrid")  # ocr_llm, vlm_direct, hybrid
@@ -190,10 +190,10 @@ async def test_all_complete_solution_areas():
         area = width * height * 100
         print(f"   {i}. {case['name']} ({area:.1f}% coverage)")
 
-    async with aiohttp.ClientSession() as session:
-        # Test API health first
+    # Test API health first
+    async with aiohttp.ClientSession() as health_session:
         try:
-            async with session.get(f"{API_BASE_URL}/health") as response:
+            async with health_session.get(f"{API_BASE_URL}/health") as response:
                 if response.status == 200:
                     health_data = await response.json()
                     print(f"\n✅ API Health Check: {health_data}")
@@ -203,24 +203,26 @@ async def test_all_complete_solution_areas():
             print(f"\n❌ Cannot connect to API: {e}")
             return []
 
-        print()
+    print()
 
-        # Run all test cases
-        results = []
-        for i, test_case in enumerate(test_cases, 1):
-            print(f"\n{'='*80}")
-            print(f"TEST {i}/{len(test_cases)}")
-            print(f"{'='*80}")
+    # Run all test cases with fresh session for each test
+    results = []
+    for i, test_case in enumerate(test_cases, 1):
+        print(f"\n{'='*80}")
+        print(f"TEST {i}/{len(test_cases)}")
+        print(f"{'='*80}")
 
+        # Create fresh session for each test to avoid session state issues
+        async with aiohttp.ClientSession() as session:
             result = await test_detect_error_endpoint(session, test_case)
             results.append(result)
 
-            # Wait between tests to avoid rate limiting
-            if i < len(test_cases):
-                print(f"\n   💤 Waiting 3s before next test...")
-                await asyncio.sleep(3)
+        # Wait between tests to avoid rate limiting
+        if i < len(test_cases):
+            print(f"\n   💤 Waiting 3s before next test...")
+            await asyncio.sleep(3)
 
-        return results
+    return results
 
 async def analyze_complete_solution_results(results: List[Dict[str, Any]]):
     """Analyze and summarize complete solution area test results"""

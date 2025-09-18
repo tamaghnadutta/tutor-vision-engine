@@ -4,26 +4,26 @@ python scripts/run_eval.py
   warn(
 2025-09-13 20:31:44 - __main__ - INFO - Starting comprehensive evaluation with all three approaches
 2025-09-13 20:31:44 - src.data.dataset - INFO - Loaded 4 samples from dataset
-2025-09-13 20:31:44 - __main__ - INFO - Evaluating OCR→LLM approach (GPT-4V OCR → GPT-4o/Gemini reasoning)
-2025-09-13 20:31:44 - src.models.error_detection_approaches - INFO - Initialized OCR→LLM: GPT-4V (OCR) → openai (reasoning)
+2025-09-13 20:31:44 - __main__ - INFO - Evaluating OCR→LLM approach (GPT-4o OCR → GPT-4o/Gemini reasoning)
+2025-09-13 20:31:44 - src.models.error_detection_approaches - INFO - Initialized OCR→LLM: GPT-4o (OCR) → openai (reasoning)
 2025-09-13 20:31:44 - src.models.gemini_processor - INFO - Initialized Gemini client successfully
 2025-09-13 20:31:44 - src.models.robust_model_router - INFO - Initialized RobustMultiModelProcessor with openai provider
 2025-09-13 20:31:44 - src.models.error_detector - INFO - Initialized ErrorDetector with 'ocr_llm' approach
 2025-09-13 20:31:44 - src.eval.evaluator - INFO - Starting evaluation of ocr_llm_approach
-2025-09-13 20:31:44 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
-2025-09-13 20:31:44 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:31:44 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
+2025-09-13 20:31:44 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:31:48 - src.models.error_detection_approaches - INFO - OCR extraction completed
 2025-09-13 20:31:48 - src.models.error_detection_approaches - INFO - Starting reasoning analysis with openai
 2025-09-13 20:31:51 - src.models.error_detection_approaches - INFO - OCR→LLM approach completed in 6.90s
 2025-09-13 20:31:51 - src.models.error_detector - INFO - Error detection completed using 'ocr_llm': has_error=True, confidence=0.950, duration=6.93s
-2025-09-13 20:31:51 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:31:51 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:31:52 - src.models.error_detection_approaches - INFO - OCR extraction completed
 2025-09-13 20:31:52 - src.models.error_detection_approaches - INFO - Starting reasoning analysis with openai
 2025-09-13 20:31:54 - src.models.error_detection_approaches - INFO - OCR extraction completed
 2025-09-13 20:31:54 - src.models.error_detection_approaches - INFO - Starting reasoning analysis with openai
 2025-09-13 20:31:56 - src.models.error_detection_approaches - INFO - OCR→LLM approach completed in 12.27s
 2025-09-13 20:31:56 - src.models.error_detector - INFO - Error detection completed using 'ocr_llm': has_error=True, confidence=0.950, duration=12.30s
-2025-09-13 20:31:56 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:31:56 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:31:58 - src.models.error_detection_approaches - INFO - OCR→LLM approach completed in 7.33s
 2025-09-13 20:31:58 - src.models.error_detector - INFO - Error detection completed using 'ocr_llm': has_error=True, confidence=0.950, duration=7.36s
 2025-09-13 20:32:02 - src.models.error_detection_approaches - INFO - OCR extraction completed
@@ -31,7 +31,7 @@ python scripts/run_eval.py
 2025-09-13 20:32:05 - src.models.error_detection_approaches - INFO - OCR→LLM approach completed in 9.03s
 2025-09-13 20:32:05 - src.models.error_detector - INFO - Error detection completed using 'ocr_llm': has_error=True, confidence=0.950, duration=9.06s
 2025-09-13 20:32:05 - src.eval.evaluator - INFO - Evaluation completed for ocr_llm_approach: accuracy=0.750, latency_p95=12.31s
-2025-09-13 20:32:05 - __main__ - INFO - Evaluating Direct VLM approach (GPT-4V or Gemini-2.5-Flash single call)
+2025-09-13 20:32:05 - __main__ - INFO - Evaluating Direct VLM approach (GPT-4o or Gemini-2.5-Flash single call)
 2025-09-13 20:32:05 - src.models.error_detection_approaches - INFO - Initialized Direct VLM approach with openai
 2025-09-13 20:32:05 - src.models.gemini_processor - INFO - Initialized Gemini client successfully
 2025-09-13 20:32:05 - src.models.robust_model_router - INFO - Initialized RobustMultiModelProcessor with openai provider
@@ -47,7 +47,7 @@ python scripts/run_eval.py
 2025-09-13 20:32:39 - src.models.error_detector - INFO - Error detection completed using 'vlm_direct': has_error=True, confidence=0.950, duration=18.43s
 2025-09-13 20:32:39 - src.eval.evaluator - INFO - Evaluation completed for vlm_direct_approach: accuracy=0.750, latency_p95=18.43s
 2025-09-13 20:32:39 - __main__ - INFO - Evaluating Hybrid approach (OCR→LLM + Direct VLM ensemble)
-2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Initialized OCR→LLM: GPT-4V (OCR) → openai (reasoning)
+2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Initialized OCR→LLM: GPT-4o (OCR) → openai (reasoning)
 2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Initialized Direct VLM approach with openai
 2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Initialized Hybrid approach (OCR→LLM + Direct VLM)
 2025-09-13 20:32:39 - src.models.gemini_processor - INFO - Initialized Gemini client successfully
@@ -55,9 +55,9 @@ python scripts/run_eval.py
 2025-09-13 20:32:39 - src.models.error_detector - INFO - Initialized ErrorDetector with 'hybrid' approach
 2025-09-13 20:32:39 - src.eval.evaluator - INFO - Starting evaluation of hybrid_approach
 2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Starting parallel execution of OCR→LLM and Direct VLM approaches...
-2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Starting parallel execution of OCR→LLM and Direct VLM approaches...
-2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:32:39 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:32:42 - src.models.error_detection_approaches - INFO - OCR extraction completed
 2025-09-13 20:32:42 - src.models.error_detection_approaches - INFO - Starting reasoning analysis with openai
 2025-09-13 20:32:44 - src.models.error_detection_approaches - INFO - OCR→LLM approach completed in 5.55s
@@ -71,7 +71,7 @@ python scripts/run_eval.py
 2025-09-13 20:32:52 - src.models.error_detection_approaches - INFO - Hybrid approach completed in 13.34s
 2025-09-13 20:32:52 - src.models.error_detector - INFO - Error detection completed using 'hybrid': has_error=True, confidence=0.950, duration=13.36s
 2025-09-13 20:32:52 - src.models.error_detection_approaches - INFO - Starting parallel execution of OCR→LLM and Direct VLM approaches...
-2025-09-13 20:32:52 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:32:52 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:32:56 - src.models.error_detection_approaches - INFO - OCR extraction completed
 2025-09-13 20:32:56 - src.models.error_detection_approaches - INFO - Starting reasoning analysis with openai
 2025-09-13 20:33:00 - src.models.error_detection_approaches - INFO - OCR→LLM approach completed in 8.00s
@@ -82,7 +82,7 @@ python scripts/run_eval.py
 2025-09-13 20:33:03 - src.models.error_detection_approaches - INFO - Hybrid approach completed in 24.19s
 2025-09-13 20:33:03 - src.models.error_detector - INFO - Error detection completed using 'hybrid': has_error=True, confidence=0.950, duration=24.22s
 2025-09-13 20:33:03 - src.models.error_detection_approaches - INFO - Starting parallel execution of OCR→LLM and Direct VLM approaches...
-2025-09-13 20:33:03 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4V...
+2025-09-13 20:33:03 - src.models.error_detection_approaches - INFO - Starting parallel OCR extraction with GPT-4o...
 2025-09-13 20:33:04 - src.models.error_detection_approaches - INFO - Direct VLM approach completed in 12.05s
 2025-09-13 20:33:04 - src.models.error_detection_approaches - INFO - Both approaches completed, starting ensemble...
 2025-09-13 20:33:04 - src.models.error_detection_approaches - INFO - Ensembling results: OCR→LLM confidence=0.950, Direct VLM confidence=0.950
@@ -170,9 +170,9 @@ Cost Estimation (per 100 requests):
 +-----------------------+------------------+----------------------------------------------------------------------+
 | Approach              | Estimated Cost   | Notes                                                                |
 +=======================+==================+======================================================================+
-| Direct VLM (Baseline) | $0.90            | GPT-4V single call - most cost-effective                             |
+| Direct VLM (Baseline) | $0.90            | GPT-4o single call - most cost-effective                             |
 +-----------------------+------------------+----------------------------------------------------------------------+
-| OCR→LLM               | $1.07            | GPT-4V OCR + GPT-4o reasoning - 2 API calls                          |
+| OCR→LLM               | $1.07            | GPT-4o OCR + GPT-4o reasoning - 2 API calls                          |
 +-----------------------+------------------+----------------------------------------------------------------------+
 | Hybrid (Improvement)  | $1.98            | Both approaches + ensemble - highest cost, potentially best accuracy |
 +-----------------------+------------------+----------------------------------------------------------------------+

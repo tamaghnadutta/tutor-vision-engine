@@ -50,7 +50,7 @@
         },
         {
           "step": 8,
-          "text": "P(c\u2229g) = P(cg)\u00b7P(c|g) = (1-P(k))\u00b71/2",
+          "text": "P(c\u2229g) = P(g)\u00b7P(c|g) = (1-P(k))\u00b71/2",
           "has_error": false
         }
       ],

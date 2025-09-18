@@ -1,7 +1,7 @@
 """
 Error Detection Approaches as per assignment requirements:
-1. OCR→LLM: GPT-4V (OCR) → GPT-4o/Gemini-2.5-Flash (text reasoning)
-2. Direct VLM: GPT-4V or Gemini-2.5-Flash (single call)
+1. OCR→LLM: GPT-4o (OCR) → GPT-4o/Gemini-2.5-Flash (text reasoning)
+2. Direct VLM: GPT-4o or Gemini-2.5-Flash (single call)
 3. Hybrid: Run both approaches, compare confidence scores, ensemble results
 """
 
@@ -43,11 +43,11 @@ class BaseErrorDetectionApproach(ABC):
 
 
 class OCRToLLMApproach(BaseErrorDetectionApproach):
-    """OCR→LLM: GPT-4V (OCR) → GPT-4o/Gemini-2.5-Flash (text reasoning)"""
+    """OCR→LLM: GPT-4o (OCR) → GPT-4o/Gemini-2.5-Flash (text reasoning)"""
 
     def __init__(self):
         super().__init__()
-        # Import OpenAI for GPT-4V OCR
+        # Import OpenAI for GPT-4o OCR
         try:
             import openai
             self.ocr_client = openai.OpenAI(api_key=self.settings.openai_api_key)
@@ -70,7 +70,7 @@ class OCRToLLMApproach(BaseErrorDetectionApproach):
             self.reasoning_model = self.settings.openai_model
 
         self.reasoning_provider = reasoning_provider
-        logger.info(f"Initialized OCR→LLM: GPT-4V (OCR) → {reasoning_provider} (reasoning)")
+        logger.info(f"Initialized OCR→LLM: GPT-4o (OCR) → {reasoning_provider} (reasoning)")
 
     def get_approach_name(self) -> str:
         return f"ocr_llm_gpt4v_to_{self.reasoning_provider}"
@@ -89,7 +89,7 @@ class OCRToLLMApproach(BaseErrorDetectionApproach):
         return f"data:image/jpeg;base64,{base64_string}"
 
     async def _extract_text_with_gpt4v(self, image: Image.Image, image_type: str) -> str:
-        """Extract text from image using GPT-4V"""
+        """Extract text from image using GPT-4o"""
         image_url = self._image_to_base64_url(image)
 
         if image_type == "question":
@@ -137,7 +137,7 @@ class OCRToLLMApproach(BaseErrorDetectionApproach):
             return completion.choices[0].message.content.strip()
 
         except Exception as e:
-            logger.error(f"GPT-4V OCR failed for {image_type}: {e}")
+            logger.error(f"GPT-4o OCR failed for {image_type}: {e}")
             return f"OCR extraction failed for {image_type}"
 
     async def _analyze_with_reasoning_model(self, question_text: str, solution_text: str,
@@ -247,12 +247,12 @@ IMPORTANT: error_location_y must be a NUMBER (e.g. 150.0) or null, NOT a string 
 
     async def detect_errors(self, question_image: Image.Image, solution_image: Image.Image,
                           context: Optional[Dict[str, Any]] = None) -> VisionAnalysisResult:
-        """OCR→LLM approach: GPT-4V extracts text, then reasoning model analyzes"""
+        """OCR→LLM approach: GPT-4o extracts text, then reasoning model analyzes"""
         start_time = time.time()
 
         try:
-            # Step 1: Extract text from both images using GPT-4V in parallel
-            logger.info("Starting parallel OCR extraction with GPT-4V...")
+            # Step 1: Extract text from both images using GPT-4o in parallel
+            logger.info("Starting parallel OCR extraction with GPT-4o...")
             question_task = asyncio.create_task(
                 self._extract_text_with_gpt4v(question_image, "question")
             )
@@ -278,7 +278,7 @@ IMPORTANT: error_location_y must be a NUMBER (e.g. 150.0) or null, NOT a string 
                     extracted_text=solution_text,
                     mathematical_expressions=[],  # Could parse these from text
                     steps=math_steps,
-                    has_diagrams=False,  # GPT-4V could detect this
+                    has_diagrams=False,  # GPT-4o could detect this
                     confidence=analysis_result.get("confidence", 0.8)
                 ),
                 error_analysis=ErrorAnalysis(
@@ -297,7 +297,7 @@ IMPORTANT: error_location_y must be a NUMBER (e.g. 150.0) or null, NOT a string 
                 ),
                 question_has_diagram=False,  # Could enhance to detect
                 solution_has_diagram=False,  # Could enhance to detect
-                processing_notes=f"OCR→LLM: GPT-4V → {self.reasoning_provider}, processing_time: {time.time() - start_time:.2f}s"
+                processing_notes=f"OCR→LLM: GPT-4o → {self.reasoning_provider}, processing_time: {time.time() - start_time:.2f}s"
             )
 
             logger.info(f"OCR→LLM approach completed in {time.time() - start_time:.2f}s")
@@ -365,7 +365,7 @@ IMPORTANT: error_location_y must be a NUMBER (e.g. 150.0) or null, NOT a string 
 
 
 class DirectVLMApproach(BaseErrorDetectionApproach):
-    """Direct VLM: GPT-4V or Gemini-2.5-Flash (single call)"""
+    """Direct VLM: GPT-4o or Gemini-2.5-Flash (single call)"""
 
     def __init__(self):
         super().__init__()
@@ -487,7 +487,7 @@ IMPORTANT: error_location_y must be a NUMBER (e.g. 150.0) or null, NOT a string 
 
         try:
             if self.vlm_provider == "openai":
-                # OpenAI GPT-4V approach
+                # OpenAI GPT-4o approach
                 question_url = self._image_to_base64_url(question_image)
                 solution_url = self._image_to_base64_url(solution_image)
 

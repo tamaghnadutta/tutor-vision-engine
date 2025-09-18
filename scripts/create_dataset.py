@@ -40,7 +40,7 @@ def create_real_dataset() -> ErrorDetectionDataset:
             {"step": 5, "text": "P(c|g) = 1/2", "has_error": False},
             {"step": 6, "text": "P(g|c) = 1/6", "has_error": False},
             {"step": 7, "text": "P(g|c) = P(c∩g)/P(c)", "has_error": False},
-            {"step": 8, "text": "P(c∩g) = P(cg)·P(c|g) = (1-P(k))·1/2", "has_error": False}
+            {"step": 8, "text": "P(c∩g) = P(g)·P(c|g) = (1-P(k))·1/2", "has_error": False}
         ],
         is_noisy=False,
         metadata={

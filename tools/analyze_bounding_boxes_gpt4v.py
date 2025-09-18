@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Use GPT-4V to analyze solution images and determine optimal bounding boxes
+Use GPT-4o to analyze solution images and determine optimal bounding boxes
 """
 
 import asyncio
@@ -30,9 +30,9 @@ def encode_image_to_base64(image_path: str) -> str:
 
 async def analyze_image_for_bounding_boxes(session: aiohttp.ClientSession, image_path: str, image_name: str) -> dict:
     """
-    Use GPT-4V to analyze an image and suggest optimal bounding boxes
+    Use GPT-4o to analyze an image and suggest optimal bounding boxes
     """
-    print(f"\n🔍 Analyzing {image_name} with GPT-4V...")
+    print(f"\n🔍 Analyzing {image_name} with GPT-4o...")
 
     # Encode image
     base64_image = encode_image_to_base64(image_path)
@@ -126,7 +126,7 @@ async def analyze_image_for_bounding_boxes(session: aiohttp.ClientSession, image
                             "analysis": analysis_data
                         }
                     else:
-                        print(f"❌ Could not extract JSON from GPT-4V response for {image_name}")
+                        print(f"❌ Could not extract JSON from GPT-4o response for {image_name}")
                         return {
                             "image_name": image_name,
                             "success": False,
@@ -223,7 +223,7 @@ async def analyze_all_images():
     return results
 
 async def create_test_cases_from_analysis():
-    """Create test cases based on GPT-4V analysis"""
+    """Create test cases based on GPT-4o analysis"""
 
     # Load the analysis results
     try:
@@ -279,7 +279,7 @@ async def create_test_cases_from_analysis():
     with open("gpt4v_test_cases.json", "w") as f:
         json.dump(test_cases, f, indent=2)
 
-    print(f"\n🧪 Created {len(test_cases)} test cases from GPT-4V analysis")
+    print(f"\n🧪 Created {len(test_cases)} test cases from GPT-4o analysis")
     print("💾 Test cases saved to gpt4v_test_cases.json")
 
     return test_cases
@@ -287,7 +287,7 @@ async def create_test_cases_from_analysis():
 async def main():
     """Main function"""
     print("Choose an option:")
-    print("1. Analyze images with GPT-4V")
+    print("1. Analyze images with GPT-4o")
     print("2. Create test cases from existing analysis")
     print("3. Both")
 

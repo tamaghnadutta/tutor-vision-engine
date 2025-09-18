@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Use GPT-4V to identify the complete student solution area bounding boxes
+Use GPT-4o to identify the complete student solution area bounding boxes
 (not individual lines, but the entire handwritten work area)
 """
 
@@ -28,7 +28,7 @@ def encode_image_to_base64(image_path: str) -> str:
 
 async def analyze_full_solution_area(session: aiohttp.ClientSession, image_path: str, image_name: str) -> dict:
     """
-    Use GPT-4V to identify the complete student solution area bounding box
+    Use GPT-4o to identify the complete student solution area bounding box
     """
     print(f"\n🔍 Analyzing complete solution area for {image_name}...")
 
@@ -127,7 +127,7 @@ async def analyze_full_solution_area(session: aiohttp.ClientSession, image_path:
                             "analysis": analysis_data
                         }
                     else:
-                        print(f"❌ Could not extract JSON from GPT-4V response for {image_name}")
+                        print(f"❌ Could not extract JSON from GPT-4o response for {image_name}")
                         return {
                             "image_name": image_name,
                             "success": False,
@@ -282,7 +282,7 @@ async def create_full_solution_test_cases():
 async def main():
     """Main function"""
     print("Choose an option:")
-    print("1. Analyze complete solution areas with GPT-4V")
+    print("1. Analyze complete solution areas with GPT-4o")
     print("2. Create test cases from existing analysis")
     print("3. Both")
 

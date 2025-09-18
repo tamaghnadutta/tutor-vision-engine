@@ -111,7 +111,6 @@ make eval
 make setup             # Install dependencies and initialize project
 make dev               # Start development server (http://localhost:8000)
                        # NOTE: Also run 'python -m http.server 8080' for sample images
-make test              # Run test suite with coverage
 make lint              # Check code quality
 make clean             # Clean build artifacts
 

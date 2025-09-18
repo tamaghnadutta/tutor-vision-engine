@@ -6,15 +6,15 @@
     "analysis": {
       "image_analysis": "The image contains handwritten mathematical content, including definitions, equations, and calculations related to probability.",
       "content_type": "Probability problem involving conditional probabilities and events.",
-      "solution_area_description": "The handwritten work is concentrated in the upper left portion of the image, with text and equations spanning from the top to about halfway down the image.",
+      "solution_area_description": "The handwritten content is centered in the image, with text and equations spanning from the top to the middle of the image. The work is aligned to the left, with some space on the right and bottom.",
       "complete_solution_bounding_box": {
-        "minX": 0.05,
-        "maxX": 0.65,
-        "minY": 0.05,
-        "maxY": 0.55
+        "minX": 0.1,
+        "maxX": 0.9,
+        "minY": 0.1,
+        "maxY": 0.6
       },
       "confidence": "high",
-      "notes": "The solution area is well-defined and does not extend into the lower half of the image, which is mostly blank."
+      "notes": "The solution area is well-defined and does not extend to the edges of the image, leaving clear margins."
     }
   },
   {
@@ -22,17 +22,17 @@
     "image_path": "data/sample_images/attempts/Attempt2.jpeg",
     "success": true,
     "analysis": {
-      "image_analysis": "The image contains handwritten mathematical calculations involving trigonometry, specifically using the tangent function to solve for a height.",
-      "content_type": "Trigonometry problem involving tangent function and solving for height.",
-      "solution_area_description": "The handwritten content is centered in the image, starting near the top and extending towards the middle. It includes equations and calculations related to solving for height using tangent.",
+      "image_analysis": "The image contains a handwritten mathematical solution involving trigonometry, specifically using the tangent function to solve for a height.",
+      "content_type": "Trigonometry problem involving tangent function",
+      "solution_area_description": "The handwritten content is centered in the image, with equations and text spanning multiple lines. The work includes mathematical notation and calculations.",
       "complete_solution_bounding_box": {
-        "minX": 0.15,
-        "maxX": 0.65,
-        "minY": 0.05,
-        "maxY": 0.45
+        "minX": 0.2,
+        "maxX": 0.7,
+        "minY": 0.1,
+        "maxY": 0.6
       },
       "confidence": "high",
-      "notes": "The solution is neatly written and occupies a compact area in the center of the image. The bounding box captures all relevant handwritten content without including excessive blank space."
+      "notes": "The solution involves calculating height using the tangent of an angle, with clear steps shown in the work."
     }
   },
   {
@@ -40,9 +40,9 @@
     "image_path": "data/sample_images/attempts/Attempt3.jpeg",
     "success": true,
     "analysis": {
-      "image_analysis": "The image contains a handwritten mathematical solution involving solving for x. The work includes equations and calculations.",
+      "image_analysis": "The image contains a handwritten mathematical solution involving solving an equation. The work includes several steps of algebraic manipulation.",
       "content_type": "Algebraic equation solving",
-      "solution_area_description": "The handwritten work is centered in the upper part of the image, with equations and calculations spread vertically.",
+      "solution_area_description": "The handwritten work is centered in the upper half of the image, with equations and calculations spread vertically. The work is aligned to the left, with the right side having more space.",
       "complete_solution_bounding_box": {
         "minX": 0.1,
         "maxX": 0.6,
@@ -58,17 +58,17 @@
     "image_path": "data/sample_images/attempts/Attempt4.jpeg",
     "success": true,
     "analysis": {
-      "image_analysis": "The image contains a handwritten mathematical solution with three main steps. It includes equations, calculations, and text instructions.",
+      "image_analysis": "The image contains a handwritten mathematical solution with three main steps. It includes equations, calculations, and text annotations.",
       "content_type": "Complex number algebra problem involving expansion and substitution.",
-      "solution_area_description": "The handwritten work spans from the top left to the bottom right of the image, covering all the steps and calculations.",
+      "solution_area_description": "The handwritten work spans from the top left to the bottom right of the image, capturing all steps and calculations.",
       "complete_solution_bounding_box": {
         "minX": 0.05,
         "maxX": 0.95,
         "minY": 0.05,
-        "maxY": 0.95
+        "maxY": 0.9
       },
       "confidence": "high",
-      "notes": "The solution is neatly organized into three steps, each clearly labeled and containing relevant calculations and results."
+      "notes": "The solution area includes all relevant mathematical expressions and annotations, ensuring no part of the student's work is excluded."
     }
   }
 ]

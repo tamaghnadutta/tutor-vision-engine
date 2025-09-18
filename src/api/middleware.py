@@ -51,10 +51,10 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         # Security headers
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["X-Content-Type-Options"] = "nosniff" # Stop MIME-type tricks; Prevents attacks where malicious scripts are disguised as harmless files
+        response.headers["X-Frame-Options"] = "DENY" # Stop clickjacking; prevents attackers trying to trick users into clicking hidden buttons by overlaying this site inside their own page
+        response.headers["X-XSS-Protection"] = "1; mode=block" # Help older browsers block reflected XSS
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains" # Force HTTPS always
 
         return response
 
